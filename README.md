@@ -21,7 +21,7 @@
 ./gradlew :app:assembleDebug  # отладочная сборка
 ```
 
-Версии: Gradle 8.9, AGP 8.7.3, Kotlin 2.0.21, compileSdk/targetSdk 35, minSdk 23.
+Версии: Gradle 8.9, AGP 8.7.3, Kotlin 2.0.21, compileSdk/targetSdk 35, minSdk 27 (Android 8.1).
 
 ## Формат сценария `.ovn`
 

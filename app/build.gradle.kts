@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "ru.uralgamebuilding.ovnezey"
-        minSdk = 23
+        minSdk = 27
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
