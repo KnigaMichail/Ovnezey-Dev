@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Овнезей</string>
+    <string name="restart">Начать заново</string>
+    <string name="story_error">Ошибка в сценарии:\n%s</string>
+</resources>
