@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Овнезей</string>
+
+    <string name="menu_continue">Продолжить</string>
+    <string name="menu_new_game">Новая игра</string>
+    <string name="menu_load">Загрузить</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="new_game_confirm">Начать новую игру? Автосохранение будет заменено.</string>
+
+    <string name="game_menu">Меню</string>
+    <string name="game_resume">Продолжить</string>
+    <string name="game_save">Сохранить</string>
+    <string name="game_load">Загрузить</string>
+    <string name="game_to_main_menu">В главное меню</string>
     <string name="restart">Начать заново</string>
+
+    <string name="save_title">Сохранение</string>
+    <string name="load_title">Загрузка</string>
+    <string name="slot_name">Слот %1$d</string>
+    <string name="slot_auto">Автосохранение</string>
+    <string name="slot_empty">Пусто</string>
+    <string name="slot_broken">Повреждено</string>
+    <string name="slot_saved">Сохранено</string>
+    <string name="confirm_overwrite">Заменить сохранение в слоте %1$d?</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="settings_language">Язык</string>
+    <string name="language_auto">Авто</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_en">English</string>
+
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="ok">ОК</string>
+    <string name="back">Назад</string>
+
+    <string name="error_title">Ошибка</string>
+    <string name="error_unreadable">Файл сохранения повреждён или не читается. Файл не изменён.</string>
+    <string name="error_newer_format">Сохранение создано более новой версией игры.</string>
+    <string name="error_version">Сохранение сделано в другой версии сюжета и не может быть загружено. Файл не изменён.</string>
+    <string name="error_scenario">Сохранение относится к другому сюжету. Файл не изменён.</string>
+    <string name="error_position">Место сохранения не найдено в сюжете. Файл не изменён.</string>
+    <string name="save_failed">Не удалось записать сохранение. Прежнее сохранение не изменено.</string>
+    <string name="autosave_failed">Не удалось записать автосохранение</string>
     <string name="story_error">Ошибка в сценарии:\n%s</string>
 </resources>

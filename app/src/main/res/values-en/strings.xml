@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ovnezey</string>
+
+    <string name="menu_continue">Continue</string>
+    <string name="menu_new_game">New game</string>
+    <string name="menu_load">Load</string>
+    <string name="menu_settings">Settings</string>
+    <string name="new_game_confirm">Start a new game? The autosave will be replaced.</string>
+
+    <string name="game_menu">Menu</string>
+    <string name="game_resume">Resume</string>
+    <string name="game_save">Save</string>
+    <string name="game_load">Load</string>
+    <string name="game_to_main_menu">Main menu</string>
+    <string name="restart">Start over</string>
+
+    <string name="save_title">Save game</string>
+    <string name="load_title">Load game</string>
+    <string name="slot_name">Slot %1$d</string>
+    <string name="slot_auto">Autosave</string>
+    <string name="slot_empty">Empty</string>
+    <string name="slot_broken">Damaged</string>
+    <string name="slot_saved">Saved</string>
+    <string name="confirm_overwrite">Replace the save in slot %1$d?</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="language_auto">Auto</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_en">English</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="back">Back</string>
+
+    <string name="error_title">Error</string>
+    <string name="error_unreadable">The save file is damaged or unreadable. The file has not been changed.</string>
+    <string name="error_newer_format">This save was made by a newer version of the game.</string>
+    <string name="error_version">This save was made with a different version of the story and cannot be loaded. The file has not been changed.</string>
+    <string name="error_scenario">This save belongs to a different story. The file has not been changed.</string>
+    <string name="error_position">The saved position was not found in the story. The file has not been changed.</string>
+    <string name="save_failed">Could not write the save. The previous save has not been changed.</string>
+    <string name="autosave_failed">Could not write the autosave</string>
+    <string name="story_error">Story error:\n%s</string>
+</resources>

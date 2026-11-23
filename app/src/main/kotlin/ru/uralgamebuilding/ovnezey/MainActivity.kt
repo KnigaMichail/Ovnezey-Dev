@@ -1,6 +1,6 @@
 package ru.uralgamebuilding.ovnezey
 
-import android.app.Activity
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -9,28 +9,28 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import ru.uralgamebuilding.ovnezey.engine.ScriptParser
+import android.widget.Toast
+import ru.uralgamebuilding.ovnezey.engine.GameState
+import ru.uralgamebuilding.ovnezey.engine.LoadResult
+import ru.uralgamebuilding.ovnezey.engine.SaveSlots
 import ru.uralgamebuilding.ovnezey.engine.Side
 import ru.uralgamebuilding.ovnezey.engine.Step
-import ru.uralgamebuilding.ovnezey.engine.Story
-import ru.uralgamebuilding.ovnezey.engine.StoryParseException
 import ru.uralgamebuilding.ovnezey.engine.StoryRunner
 import java.io.IOException
 
 /**
- * Единственный экран: рассказчик и диалоги, персонажи слева и справа, выбор кнопками.
- * Вся логика сюжета в модуле engine, здесь только отображение и сохранение.
+ * Игровой экран: рассказчик и диалоги, персонажи слева и справа, выбор кнопками.
+ * Вся логика сюжета в модуле engine, здесь только отображение и вызовы сохранения.
+ * Партию задаёт меню или экран слотов через [Services.runner].
  */
-class MainActivity : Activity() {
-    private lateinit var runner: StoryRunner
+class MainActivity : BaseActivity() {
+    private var runner: StoryRunner? = null
     private lateinit var speakerView: TextView
     private lateinit var textView: TextView
     private lateinit var choicesView: LinearLayout
     private lateinit var portraitLeft: ImageView
     private lateinit var portraitRight: ImageView
-    private lateinit var story: Story
-
-    private val prefs by lazy { getSharedPreferences(PREFS, MODE_PRIVATE) }
+    private lateinit var menuButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,53 +41,94 @@ class MainActivity : Activity() {
         portraitLeft = findViewById(R.id.portraitLeft)
         portraitRight = findViewById(R.id.portraitRight)
 
-        try {
-            story = assets.open(STORY_ASSET).bufferedReader(Charsets.UTF_8).use { ScriptParser.parse(it.readText()) }
-        } catch (e: StoryParseException) {
+        PixelUi.styleText(this, speakerView, color = PixelUi.ACCENT)
+        PixelUi.styleText(this, textView)
+        val m = PixelUi.metrics(this)
+        menuButton = PixelUi.button(this, getString(R.string.game_menu)) { showPauseMenu() }
+        findViewById<android.widget.FrameLayout>(R.id.root).addView(
+            menuButton,
+            android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                android.view.Gravity.TOP or android.view.Gravity.END,
+            ).apply { setMargins(m.pad, m.pad, m.pad, m.pad) },
+        )
+        findViewById<View>(R.id.root).setOnClickListener { onTap() }
+
+        val story = services.story
+        if (story == null) {
             speakerView.text = ""
-            textView.text = getString(R.string.story_error, e.message)
+            textView.text = getString(R.string.story_error, services.storyError)
             return
         }
-        runner = StoryRunner.fromSave(story, prefs.getString(KEY_STATE, null))
-
-        findViewById<View>(R.id.root).setOnClickListener {
-            if (runner.step is Step.Say) {
-                runner.advance()
-                afterStateChange()
-            }
+        runner = services.runner ?: restoreAutosave()
+        if (runner == null) {
+            finish()
+            return
         }
+        services.runner = runner
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        runner = services.runner
+        portraitLeft.visibility = View.INVISIBLE
+        portraitRight.visibility = View.INVISIBLE
+        render()
+    }
+
+    override fun onResume() {
+        super.onResume()
         render()
     }
 
     override fun onPause() {
         super.onPause()
-        if (::runner.isInitialized) saveState()
+        autosave()
     }
 
-    @Suppress("DEPRECATION")
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        }
+    override fun onBackPressed() {
+        if (dismissOverlay()) return
+        showPauseMenu()
     }
 
-    private fun afterStateChange() {
-        saveState()
+    /** Процесс мог быть завершён системой: партия берётся из автосохранения. */
+    private fun restoreAutosave(): StoryRunner? {
+        val result = services.load(SaveSlots.AUTO_KEY)
+        return (result as? LoadResult.Loaded)?.runner
+    }
+
+    private fun onTap() {
+        val r = runner ?: return
+        if (hasOverlay() || r.step !is Step.Say) return
+        val before = r.state
+        r.advance()
+        afterChange(before)
+    }
+
+    private fun afterChange(before: GameState) {
+        val r = runner ?: return
+        if (r.state.isSignificantChangeFrom(before)) autosave()
         render()
     }
 
-    private fun saveState() {
-        prefs.edit().putString(KEY_STATE, runner.state.encode()).apply()
+    private fun autosave() {
+        val r = runner ?: return
+        val story = services.story ?: return
+        try {
+            services.slots.saveAuto(r.state, story)
+        } catch (e: IOException) {
+            Toast.makeText(this, R.string.autosave_failed, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun render() {
+        val r = runner ?: return
+        r.language = services.settings.language
         choicesView.removeAllViews()
         choicesView.visibility = View.GONE
-        when (val step = runner.step) {
+        when (val step = r.step) {
             is Step.Say -> showSay(step)
             is Step.Choose -> showChoices(step)
             Step.End -> showEnd()
@@ -102,10 +143,11 @@ class MainActivity : Activity() {
             Side.RIGHT -> portraitRight
             Side.NONE -> null
         }
-        if (active != null && step.speaker != null) {
-            val bitmap = loadPortrait(step.speaker!!)
-            if (bitmap != null) {
-                active.setImageDrawable(bitmap)
+        val id = step.speakerId
+        if (active != null && id != null) {
+            val drawable = loadPortrait(id)
+            if (drawable != null) {
+                active.setImageDrawable(drawable)
                 active.visibility = View.VISIBLE
             }
         }
@@ -115,15 +157,19 @@ class MainActivity : Activity() {
     }
 
     private fun showChoices(step: Step.Choose) {
+        speakerView.text = ""
+        textView.text = ""
         choicesView.visibility = View.VISIBLE
         step.options.forEachIndexed { index, option ->
-            choicesView.addView(Button(this).apply {
-                text = option.text
-                setOnClickListener {
-                    runner.choose(index)
-                    afterStateChange()
-                }
-            })
+            choicesView.addView(
+                PixelUi.button(this, option.text) {
+                    val r = runner ?: return@button
+                    val before = r.state
+                    r.choose(index)
+                    afterChange(before)
+                },
+                PixelUi.matchWidth(this),
+            )
         }
     }
 
@@ -131,20 +177,44 @@ class MainActivity : Activity() {
         speakerView.text = ""
         textView.text = ""
         choicesView.visibility = View.VISIBLE
-        choicesView.addView(Button(this).apply {
-            setText(R.string.restart)
-            setOnClickListener {
-                runner = StoryRunner(story)
+        choicesView.addView(
+            PixelUi.button(this, getString(R.string.restart)) {
+                try {
+                    runner = services.startNew()
+                } catch (e: IOException) {
+                    Toast.makeText(this, R.string.autosave_failed, Toast.LENGTH_SHORT).show()
+                    return@button
+                }
                 portraitLeft.visibility = View.INVISIBLE
                 portraitRight.visibility = View.INVISIBLE
-                afterStateChange()
-            }
-        })
+                render()
+            },
+            PixelUi.matchWidth(this),
+        )
     }
 
-    /** Портрет персонажа ищется в assets/portraits/<имя>.png; пока файла нет, показывается только имя. */
-    private fun loadPortrait(name: String): BitmapDrawable? = try {
-        assets.open("portraits/$name.png").use { stream ->
+    private fun showPauseMenu() {
+        if (hasOverlay()) return
+        showDialog(
+            getString(R.string.game_menu),
+            null,
+            listOf(
+                DialogAction(getString(R.string.game_resume)) {},
+                DialogAction(getString(R.string.game_save)) { openSlots(SlotsActivity.MODE_SAVE) },
+                DialogAction(getString(R.string.game_load)) { openSlots(SlotsActivity.MODE_LOAD) },
+                DialogAction(getString(R.string.menu_settings)) { startActivity(Intent(this, SettingsActivity::class.java)) },
+                DialogAction(getString(R.string.game_to_main_menu)) { finish() },
+            ),
+        )
+    }
+
+    private fun openSlots(mode: String) {
+        startActivity(Intent(this, SlotsActivity::class.java).putExtra(SlotsActivity.EXTRA_MODE, mode))
+    }
+
+    /** Портрет персонажа ищется в assets/portraits/<идентификатор>.png; пока файла нет, показывается только имя. */
+    private fun loadPortrait(id: String): BitmapDrawable? = try {
+        assets.open("portraits/$id.png").use { stream ->
             BitmapDrawable(resources, BitmapFactory.decodeStream(stream)).apply {
                 // пиксель-арт масштабируется без сглаживания
                 setFilterBitmap(false)
@@ -152,11 +222,5 @@ class MainActivity : Activity() {
         }
     } catch (e: IOException) {
         null
-    }
-
-    private companion object {
-        const val PREFS = "ovnezey"
-        const val KEY_STATE = "state"
-        const val STORY_ASSET = "story/demo.ovn"
     }
 }
