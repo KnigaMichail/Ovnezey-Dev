@@ -1,26 +1,47 @@
 # ЗАГЛУШКА ДЛЯ ПРОВЕРКИ ДВИЖКА. Не канон сюжета, заменяется сценами из «библии мира».
+# Русский текст пишется в основной строке, английский сразу под ней в строке «|en ...».
+# Меняете структуру сюжета, повышайте версию в @scenario: старые сохранения с другой версией не загрузятся.
+@scenario demo 1
+
+@character charlie Чарли
+|en Charlie
+@character sam Сэм
+|en Sam
+
 @scene start
+@location test_street Тестовая улица
+|en Test street
 > Проверка рассказчика. Здесь будет пролог.
-Чарли@left: Проверка реплики слева.
-Сэм@right: Проверка реплики справа.
+|en Narrator check. The prologue will be here.
+charlie@left: Проверка реплики слева.
+|en Left-side line check.
+sam@right: Проверка реплики справа.
+|en Right-side line check.
 @choice
 * Взять письмо -> take
+|en Take the letter
 * Пройти мимо -> skip
+|en Walk past
 
 @scene take
-@set has_letter
+@give letter
+@param trust +1
 > Письмо взято.
+|en You took the letter.
 @goto finish
 
 @scene skip
 > Вы прошли мимо.
+|en You walked past.
 @goto finish
 
 @scene finish
-@if has_letter -> with_letter
+@if has:letter -> with_letter
 > Конец заглушки.
+|en End of the placeholder.
 @end
 
 @scene with_letter
 > Конец заглушки, письмо у вас.
+|en End of the placeholder, you have the letter.
 @end

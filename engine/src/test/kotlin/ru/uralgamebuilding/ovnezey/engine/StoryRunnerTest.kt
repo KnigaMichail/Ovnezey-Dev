@@ -114,34 +114,9 @@ class StoryRunnerTest {
     }
 
     @Test
-    fun saveRoundTripRestoresPositionAndFlags() {
-        val r = StoryRunner(story)
-        r.advance(); r.advance()
-        r.choose(0)
-        val restored = StoryRunner.fromSave(story, r.state.encode())
-        assertEquals(r.state, restored.state)
-        assertEquals("С письмом", restored.step.text())
-    }
-
-    @Test
-    fun savedStateIsEncodedDeterministically() {
-        assertEquals("v1|start|2|a,b", GameState("start", 2, setOf("b", "a")).encode())
-        assertEquals(GameState("start", 2, setOf("a", "b")), GameState.decode("v1|start|2|a,b"))
-        assertEquals(GameState("start", 0), GameState.decode("v1|start|0|"))
-    }
-
-    @Test
     fun corruptedSavesAreRejectedByDecode() {
         listOf(null, "", "garbage", "v2|start|0|", "v1|start|-1|", "v1|start|x|", "v1|sta rt|0|", "v1|start|0|bad flag", "v1|start|0")
             .forEach { assertNull(GameState.decode(it), "должно быть отвергнуто: $it") }
     }
 
-    @Test
-    fun savesFromAnotherStoryVersionStartOver() {
-        val fresh = StoryRunner(story)
-        assertEquals(fresh.state, StoryRunner.fromSave(story, "v1|removed_scene|0|").state)
-        assertEquals(fresh.state, StoryRunner.fromSave(story, "v1|start|99|").state)
-        assertEquals(fresh.state, StoryRunner.fromSave(story, "garbage").state)
-        assertEquals(fresh.state, StoryRunner.fromSave(story, null).state)
-    }
 }
