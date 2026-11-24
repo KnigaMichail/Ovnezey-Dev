@@ -1,12 +1,30 @@
 # ЗАГЛУШКА ДЛЯ ПРОВЕРКИ ДВИЖКА. Не канон сюжета, заменяется сценами из «библии мира».
 # Русский текст пишется в основной строке, английский сразу под ней в строке «|en ...».
 # Меняете структуру сюжета, повышайте версию в @scenario: старые сохранения с другой версией не загрузятся.
-@scenario demo 1
+@scenario demo 2
 
 @character charlie Чарли
 |en Charlie
 @character sam Сэм
 |en Sam
+
+@item letter
+name: Письмо
+|en Letter
+desc: Заглушка для проверки предметов.
+|en A placeholder item for testing.
+@item test_key
+name: Тестовый ключ
+|en Test key
+desc: Открывает тестовый ящик. Расходуется.
+|en Opens the test box. Consumed on use.
+use: consume
+@item test_card
+name: Тестовая карта
+|en Test card
+desc: Подходит к тестовому терминалу. Расходуется.
+|en Fits the test terminal. Consumed on use.
+use: consume
 
 @scene start
 @location test_street Тестовая улица
@@ -28,20 +46,91 @@ sam@right: Проверка реплики справа.
 @param trust +1
 > Письмо взято.
 |en You took the letter.
-@goto finish
+@goto room
 
 @scene skip
 > Вы прошли мимо.
 |en You walked past.
-@goto finish
+@goto room
 
-@scene finish
-@if has:letter -> with_letter
+# Проверка осмотра локации: области на картинке, предметы из рюкзака, реакции на неверный предмет.
+@scene room
+@location test_room Тестовая комната
+|en Test room
+> Проверка осмотра. Нажимайте на объекты или применяйте предмет из рюкзака.
+|en Exploration check. Tap objects or use an item from the backpack.
+@if room_visited -> room_hub
+@set room_visited
+@give test_key
+@goto room_hub
+
+@scene room_hub
+@explore
+* box 0.10 0.50 0.24 0.28 Тестовый ящик -> box_look ? !box_open
+|en Test box
+* box_opened 0.10 0.50 0.24 0.28 Открытый ящик -> box_empty ? box_open
+|en Open box
+* terminal 0.52 0.28 0.22 0.36 Тестовый терминал -> terminal_look ? !terminal_ok
+|en Test terminal
+* terminal_working 0.52 0.28 0.22 0.36 Работающий терминал -> terminal_done ? terminal_ok
+|en Working terminal
+* exit 0.84 0.22 0.12 0.52 Выход -> exit_scene ? terminal_ok
+|en Exit
+@use test_key box -> box_unlock
+@use test_card terminal -> terminal_unlock
+@fail terminal -> wrong_for_terminal
+@fail * -> wrong_item
+
+@scene box_look
+> Ящик заперт.
+|en The box is locked.
+@goto room_hub
+
+@scene box_unlock
+@set box_open
+@give test_card
+> Ящик открыт, внутри тестовая карта.
+|en The box is open, there is a test card inside.
+@goto room_hub
+
+@scene box_empty
+> Внутри пусто.
+|en It is empty inside.
+@goto room_hub
+
+@scene terminal_look
+> Терминал требует карту.
+|en The terminal needs a card.
+@goto room_hub
+
+@scene terminal_unlock
+@set terminal_ok
+> Терминал принял карту. Появился выход.
+|en The terminal accepted the card. An exit appeared.
+@goto room_hub
+
+@scene terminal_done
+> Терминал работает.
+|en The terminal is working.
+@goto room_hub
+
+@scene wrong_for_terminal
+> Это не подходит к терминалу.
+|en This does not fit the terminal.
+@goto room_hub
+
+@scene wrong_item
+> Это сюда не подходит.
+|en This does not fit here.
+@goto room_hub
+
+@scene exit_scene
+@if has:letter -> end_with_letter
 > Конец заглушки.
 |en End of the placeholder.
 @end
 
-@scene with_letter
+@scene end_with_letter
 > Конец заглушки, письмо у вас.
 |en End of the placeholder, you have the letter.
 @end

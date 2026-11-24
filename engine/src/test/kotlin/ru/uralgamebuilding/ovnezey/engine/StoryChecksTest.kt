@@ -35,11 +35,32 @@ class StoryChecksTest {
     }
 
     @Test
+    fun reportsMissingTranslationsOfHotspotsAndItems() {
+        val story = ScriptParser.parse(
+            "@item a\nname: Имя\ndesc: Описание\n@scene start\n@explore\n* h 0 0 0.5 0.5 Область -> start",
+        )
+        val missing = StoryChecks.missingTranslations(story)
+        assertTrue(missing.any { it.contains("область «Область»") })
+        assertTrue(missing.any { it.contains("предмет a: название") })
+        assertTrue(missing.any { it.contains("предмет a: описание") })
+    }
+
+    @Test
+    fun findsUndeclaredItemsInUse() {
+        val story = ScriptParser.parse(
+            "@item known\nname: K\n@scene start\n@give known\n@give ghost\n@take phantom\n" +
+                "@if has:spirit -> two\n> x\n@end\n@scene two\n@end",
+        )
+        assertEquals(setOf("ghost", "phantom", "spirit"), StoryChecks.undefinedItems(story))
+    }
+
+    @Test
     fun bundledDemoStoryIsValidAndFullyTranslated() {
         val file = listOf("../app/src/main/assets/story/demo.ovn", "app/src/main/assets/story/demo.ovn")
             .map { File(it) }.firstOrNull { it.isFile }
         org.junit.Assume.assumeTrue("demo.ovn не найден относительно рабочей папки", file != null)
         val story = ScriptParser.parse(file!!.readText(Charsets.UTF_8))
         assertEquals(emptyList(), StoryChecks.missingTranslations(story))
+        assertEquals(emptySet(), StoryChecks.undefinedItems(story))
     }
 }

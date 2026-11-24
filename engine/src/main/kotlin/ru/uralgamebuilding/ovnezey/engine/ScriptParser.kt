@@ -5,17 +5,36 @@ class StoryParseException(message: String, val line: Int? = null) :
 
 /**
  * Разбор текстового формата сценария (.ovn). Справочник формата: README.md.
- * Парсер ничего не знает об Android и проверяет сценарий целиком: ссылки на сцены,
+ * Парсер ничего не знает об Android и проверяет сценарий целиком: ссылки на сцены, области и предметы,
  * наличие сцены start, корректное завершение каждой сцены, названия локаций.
  */
 object ScriptParser {
     private const val ID = "[A-Za-z0-9_]+"
+    private const val NUM = """(\d+(?:\.\d+)?)"""
     private val OPTION = Regex("""^\*\s+(.+?)\s+->\s+($ID)(?:\s+\?\s*(.+))?$""")
+    private val HOTSPOT = Regex("""^\*\s+($ID)\s+$NUM\s+$NUM\s+$NUM\s+$NUM\s+(.+?)\s+->\s+($ID)(?:\s+\?\s*(.+))?$""")
+    private val USE = Regex("""^@use\s+($ID)\s+($ID)\s*->\s*($ID)(?:\s+\?\s*(.+))?$""")
+    private val FAIL = Regex("""^@fail\s+($ID|\*)\s*->\s*($ID)$""")
     private val IF = Regex("""^@if\s+(.+?)\s*->\s*($ID)$""")
     private val PARAM = Regex("""^@param\s+($ID)\s+(?:([+-])\s*(\d+)|=\s*(-?\d+))$""")
     private val SAY = Regex("""^([^:@>*#|]+?)(?:@(left|right))?:\s*(.+)$""")
     private val TRANSLATION = Regex("""^\|([a-z]{2})\s+(.+)$""")
+    private val ITEM_FIELD = Regex("""^(name|desc|use):\s*(.*)$""")
     private val ID_ONLY = Regex("^$ID$")
+
+    private class ItemBuilder(val id: String, val line: Int) {
+        var name: Named? = null
+        var description: Named = Named("")
+        var consume = false
+    }
+
+    private class ExploreBuilder(val line: Int) {
+        val hotspots = mutableListOf<Hotspot>()
+        val uses = mutableListOf<UseRule>()
+        val fails = mutableListOf<FailRule>()
+        val useLines = mutableListOf<Int>()
+        val failLines = mutableListOf<Int>()
+    }
 
     fun parse(source: String): Story {
         val scenes = LinkedHashMap<String, MutableList<Node>>()
@@ -24,12 +43,15 @@ object ScriptParser {
         val characters = LinkedHashMap<String, Character>()
         val locationTitles = LinkedHashMap<String, Named>()
         val usedLocations = LinkedHashMap<String, Int>()
+        val items = LinkedHashMap<String, ItemDef>()
         var scenarioId = Story.DEFAULT_SCENARIO_ID
         var scenarioVersion = 1
         var scenarioDeclared = false
         var current: MutableList<Node>? = null
         var options: MutableList<Option>? = null
         var choiceLine = 0
+        var itemBuilder: ItemBuilder? = null
+        var explore: ExploreBuilder? = null
         // Принимает строку перевода «|en ...» для последней текстовой строки; null, если переводить нечего.
         var attach: ((Language, String, Int) -> Unit)? = null
 
@@ -38,6 +60,29 @@ object ScriptParser {
             if (opts.isEmpty()) throw StoryParseException("пустой @choice, нужен хотя бы один вариант «* текст -> сцена»", choiceLine)
             current!!.add(Node.Choice(opts.toList()))
             options = null
+        }
+
+        fun closeExplore() {
+            val b = explore ?: return
+            if (b.hotspots.isEmpty()) throw StoryParseException("пустой @explore, нужна хотя бы одна область «* id x y w h Название -> сцена»", b.line)
+            val ids = b.hotspots.map { it.id }.toSet()
+            b.uses.forEachIndexed { i, u ->
+                if (u.hotspot !in ids) throw StoryParseException("@use ссылается на несуществующую область «${u.hotspot}»", b.useLines[i])
+            }
+            b.fails.forEachIndexed { i, f ->
+                if (f.hotspot != FailRule.ANY && f.hotspot !in ids) {
+                    throw StoryParseException("@fail ссылается на несуществующую область «${f.hotspot}»", b.failLines[i])
+                }
+            }
+            current!!.add(Node.Explore(b.hotspots.toList(), b.uses.toList(), b.fails.toList()))
+            explore = null
+        }
+
+        fun closeItem() {
+            val b = itemBuilder ?: return
+            val name = b.name ?: throw StoryParseException("у предмета «${b.id}» нет строки «name: ...»", b.line)
+            items[b.id] = ItemDef(b.id, name, b.description, b.consume)
+            itemBuilder = null
         }
 
         fun id(value: String, n: Int, what: String): String {
@@ -73,6 +118,83 @@ object ScriptParser {
             }
 
             attach = null
+
+            // Блок @item: поля name:, desc:, use:. Заканчивается любой командой на «@».
+            itemBuilder?.let { b ->
+                if (!line.startsWith("@")) {
+                    val m = ITEM_FIELD.matchEntire(line)
+                        ?: throw StoryParseException("в блоке @item допустимы строки «name: ...», «desc: ...», «use: keep|consume»", n)
+                    val value = m.groupValues[2].trim()
+                    when (m.groupValues[1]) {
+                        "name" -> {
+                            if (value.isEmpty()) throw StoryParseException("пустое название предмета", n)
+                            if (b.name != null) throw StoryParseException("name: для предмета «${b.id}» уже задано", n)
+                            b.name = Named(value.unescape())
+                            attach = { lang, tr, ln ->
+                                val cur = b.name!!
+                                if (lang in cur.translations) duplicate(lang, ln)
+                                b.name = cur.copy(translations = cur.translations + (lang to tr))
+                            }
+                        }
+                        "desc" -> {
+                            b.description = Named(value.unescape())
+                            attach = { lang, tr, ln ->
+                                val cur = b.description
+                                if (lang in cur.translations) duplicate(lang, ln)
+                                b.description = cur.copy(translations = cur.translations + (lang to tr))
+                            }
+                        }
+                        else -> b.consume = when (value) {
+                            "keep" -> false
+                            "consume" -> true
+                            else -> throw StoryParseException("use: принимает keep или consume, получено «$value»", n)
+                        }
+                    }
+                    return@forEachIndexed
+                }
+                closeItem()
+            }
+
+            // Блок @explore: области «* id x y w h Название -> сцена», правила @use и @fail.
+            explore?.let { b ->
+                when {
+                    line.startsWith("*") -> {
+                        val m = HOTSPOT.matchEntire(line) ?: throw StoryParseException(
+                            "неверная область, ожидается «* id x y w h Название -> сцена» или «... -> сцена ? условие»", n,
+                        )
+                        val g = m.groupValues
+                        val hotspotId = g[1]
+                        if (b.hotspots.any { it.id == hotspotId }) throw StoryParseException("область «$hotspotId» уже объявлена", n)
+                        val x = g[2].toFloat(); val y = g[3].toFloat(); val w = g[4].toFloat(); val h = g[5].toFloat()
+                        if (w <= 0f || h <= 0f || x + w > 1.0001f || y + h > 1.0001f) {
+                            throw StoryParseException("область «$hotspotId» выходит за картинку: x+w и y+h не больше 1, w и h больше 0", n)
+                        }
+                        val cond = g[8].takeIf { it.isNotEmpty() }?.let { condition(it, n) }
+                        b.hotspots.add(Hotspot(hotspotId, x, y, w, h, g[6].unescape(), g[7], condition = cond))
+                        val idx = b.hotspots.lastIndex
+                        attach = { lang, tr, ln ->
+                            val cur = b.hotspots[idx]
+                            if (lang in cur.translations) duplicate(lang, ln)
+                            b.hotspots[idx] = cur.copy(translations = cur.translations + (lang to tr))
+                        }
+                        return@forEachIndexed
+                    }
+                    line.startsWith("@use") -> {
+                        val m = USE.matchEntire(line) ?: throw StoryParseException("ожидается «@use предмет область -> сцена»", n)
+                        val cond = m.groupValues[4].takeIf { it.isNotEmpty() }?.let { condition(it, n) }
+                        b.uses.add(UseRule(m.groupValues[1], m.groupValues[2], m.groupValues[3], cond))
+                        b.useLines.add(n)
+                        return@forEachIndexed
+                    }
+                    line.startsWith("@fail") -> {
+                        val m = FAIL.matchEntire(line) ?: throw StoryParseException("ожидается «@fail область -> сцена» или «@fail * -> сцена»", n)
+                        b.fails.add(FailRule(m.groupValues[1], m.groupValues[2]))
+                        b.failLines.add(n)
+                        return@forEachIndexed
+                    }
+                    else -> closeExplore()
+                }
+            }
 
             if (options != null) {
                 if (line.startsWith("*")) {
@@ -129,6 +251,11 @@ object ScriptParser {
                             characters[charId] = cur.copy(name = cur.name.copy(translations = cur.name.translations + (lang to tr)))
                         }
                     }
+                    "@item" -> {
+                        val itemId = id(arg, n, "предмета")
+                        if (items.containsKey(itemId)) throw StoryParseException("предмет «$itemId» уже объявлен", n)
+                        itemBuilder = ItemBuilder(itemId, n)
+                    }
                     "@scene" -> {
                         closeChoice()
                         val name = id(arg, n, "сцены")
@@ -140,6 +267,8 @@ object ScriptParser {
                         val scene = current ?: throw StoryParseException("команда $cmd вне сцены, сначала нужна «@scene имя»", n)
                         when (cmd) {
                             "@choice" -> { options = mutableListOf(); choiceLine = n }
+                            "@explore" -> explore = ExploreBuilder(n)
+                            "@use", "@fail" -> throw StoryParseException("$cmd допустим только внутри блока @explore", n)
                             "@goto" -> scene.add(Node.Goto(id(arg, n, "сцены")))
                             "@set" -> scene.add(Node.SetFlag(id(arg, n, "флага")))
                             "@end" -> scene.add(Node.End)
@@ -188,9 +317,8 @@ object ScriptParser {
 
             val scene = current ?: throw StoryParseException("текст вне сцены, сначала нужна «@scene имя»", n)
             if (line.startsWith(">")) {
-                addSay(scene, null, Side.NONE, line.substring(1).trim().unescape()).also { idx ->
-                    attach = sayAttach(scene, idx) { lang, ln -> duplicate(lang, ln) }
-                }
+                val idx = addSay(scene, null, Side.NONE, line.substring(1).trim().unescape())
+                attach = sayAttach(scene, idx) { lang, ln -> duplicate(lang, ln) }
                 return@forEachIndexed
             }
             val m = SAY.matchEntire(line)
@@ -203,13 +331,14 @@ object ScriptParser {
                 else -> lastSide[speaker] ?: Side.LEFT
             }
             lastSide[speaker] = resolved
-            addSay(scene, speaker, resolved, text.unescape()).also { idx ->
-                attach = sayAttach(scene, idx) { lang, ln -> duplicate(lang, ln) }
-            }
+            val idx = addSay(scene, speaker, resolved, text.unescape())
+            attach = sayAttach(scene, idx) { lang, ln -> duplicate(lang, ln) }
         }
+        closeItem()
         closeChoice()
-        validate(scenes, usedLocations, locationTitles)
-        return Story(scenes, scenarioId, scenarioVersion, characters, locationTitles)
+        closeExplore()
+        validate(scenes, usedLocations, locationTitles, items)
+        return Story(scenes, scenarioId, scenarioVersion, characters, locationTitles, items)
     }
 
     private fun addSay(scene: MutableList<Node>, speaker: String?, side: Side, text: String): Int {
@@ -233,13 +362,14 @@ object ScriptParser {
         scenes: Map<String, List<Node>>,
         usedLocations: Map<String, Int>,
         locationTitles: Map<String, Named>,
+        items: Map<String, ItemDef>,
     ) {
         if (!scenes.containsKey(Story.START)) throw StoryParseException("нет сцены «${Story.START}»")
         for ((name, nodes) in scenes) {
             if (nodes.isEmpty()) throw StoryParseException("сцена «$name» пуста")
             val last = nodes.last()
-            if (last !is Node.End && last !is Node.Goto && last !is Node.Choice) {
-                throw StoryParseException("сцена «$name» не завершена: последней командой должна быть @end, @goto или @choice")
+            if (last !is Node.End && last !is Node.Goto && last !is Node.Choice && last !is Node.Explore) {
+                throw StoryParseException("сцена «$name» не завершена: последней командой должна быть @end, @goto, @choice или @explore")
             }
             for (node in nodes) {
                 val targets = when (node) {
@@ -247,10 +377,18 @@ object ScriptParser {
                     is Node.IfGoto -> listOf(node.target)
                     is Node.IfWhen -> listOf(node.target)
                     is Node.Choice -> node.options.map { it.target }
+                    is Node.Explore -> node.hotspots.map { it.target } + node.uses.map { it.target } + node.fails.map { it.target }
                     else -> emptyList()
                 }
                 for (t in targets) {
                     if (!scenes.containsKey(t)) throw StoryParseException("сцена «$name» ссылается на несуществующую сцену «$t»")
+                }
+                if (node is Node.Explore) {
+                    for (use in node.uses) {
+                        if (!items.containsKey(use.item)) {
+                            throw StoryParseException("в сцене «$name» @use использует необъявленный предмет «${use.item}», объявите его через @item")
+                        }
+                    }
                 }
             }
         }

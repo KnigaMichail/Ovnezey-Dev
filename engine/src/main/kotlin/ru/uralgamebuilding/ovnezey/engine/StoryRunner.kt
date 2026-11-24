@@ -1,5 +1,24 @@
 package ru.uralgamebuilding.ovnezey.engine
 
+/** Область на картинке для показа: название на текущем языке и прямоугольник в долях картинки. */
+data class HotspotView(val id: String, val label: String, val x: Float, val y: Float, val w: Float, val h: Float)
+
+/** Предмет в рюкзаке для показа: тексты на текущем языке. */
+data class ItemView(val id: String, val name: String, val description: String)
+
+enum class RejectReason { NOT_EXPLORING, NO_SUCH_HOTSPOT, HOTSPOT_UNAVAILABLE, ITEM_NOT_OWNED, NO_EFFECT }
+
+/** Итог применения предмета на область. [Rejected] значит, что состояние не изменилось. */
+sealed interface UseResult {
+    /** Сочетание подошло: запущена сцена из сценария, расходуемый предмет израсходован. */
+    data object Used : UseResult
+
+    /** Сочетание не подошло, но в сценарии есть реакция: запущена она, предмет не расходуется. */
+    data object Reaction : UseResult
+
+    data class Rejected(val reason: RejectReason) : UseResult
+}
+
 /** Что сейчас должно быть показано игроку. Тексты уже на языке [StoryRunner.language]. */
 sealed interface Step {
     /** [speaker] отображаемое имя, [speakerId] идентификатор из сценария (ключ портрета). */
@@ -7,6 +26,9 @@ sealed interface Step {
 
     /** [options] только доступные при текущем состоянии; в [StoryRunner.choose] передаётся индекс в этом списке. */
     data class Choose(val options: List<Option>) : Step
+
+    /** Осмотр локации: доступные сейчас области. */
+    data class Explore(val hotspots: List<HotspotView>) : Step
 
     data object End : Step
 }
@@ -37,8 +59,20 @@ class StoryRunner(
                 speakerId = node.speaker,
             )
             is Node.Choice -> Step.Choose(visibleOptions(node).map { it.localized(language) })
+            is Node.Explore -> Step.Explore(visibleHotspots(node).map {
+                HotspotView(it.id, it.translations.resolve(it.label, language), it.x, it.y, it.w, it.h)
+            })
             Node.End -> Step.End
             else -> error("внутренняя ошибка: незавершённая команда $node")
+        }
+
+    /** Предметы в рюкзаке в порядке объявления в сценарии; необъявленные идут в конце по алфавиту. */
+    val inventoryItems: List<ItemView>
+        get() {
+            val defined = story.items.values.filter { it.id in state.inventory }
+            val undefined = (state.inventory - story.items.keys).sorted()
+            return defined.map { ItemView(it.id, it.name.get(language), it.description.get(language)) } +
+                undefined.map { ItemView(it, it, "") }
         }
 
     /** Название текущей локации на текущем языке или null, если локация не задана. */
@@ -62,6 +96,51 @@ class StoryRunner(
         settle()
     }
 
+    /** Нажатие на область во время осмотра: переход в сцену области. */
+    fun tap(hotspotId: String) {
+        val node = nodeAt(state)
+        check(node is Node.Explore) { "tap() допустим только при осмотре локации" }
+        val hotspot = node.hotspots.firstOrNull { it.id == hotspotId && it.isAvailable(state) }
+            ?: throw IllegalArgumentException("нет доступной области «$hotspotId»")
+        state = state.copy(scene = hotspot.target, index = 0)
+        settle()
+    }
+
+    /**
+     * Применение предмета [itemId] на область [hotspotId]. Неверное применение не портит состояние:
+     * возвращается [UseResult.Rejected] либо запускается реакция из сценария ([UseResult.Reaction]).
+     */
+    fun useItem(itemId: String, hotspotId: String): UseResult {
+        val node = nodeAt(state) as? Node.Explore ?: return UseResult.Rejected(RejectReason.NOT_EXPLORING)
+        val hotspot = node.hotspots.firstOrNull { it.id == hotspotId }
+            ?: return UseResult.Rejected(RejectReason.NO_SUCH_HOTSPOT)
+        if (!hotspot.isAvailable(state)) return UseResult.Rejected(RejectReason.HOTSPOT_UNAVAILABLE)
+        if (itemId !in state.inventory) return UseResult.Rejected(RejectReason.ITEM_NOT_OWNED)
+
+        val rule = node.uses.firstOrNull {
+            it.item == itemId && it.hotspot == hotspotId && (it.condition?.test(state) ?: true)
+        }
+        if (rule != null) {
+            val consumed = story.items[itemId]?.consume == true
+            state = state.copy(
+                scene = rule.target,
+                index = 0,
+                inventory = if (consumed) state.inventory - itemId else state.inventory,
+            )
+            settle()
+            return UseResult.Used
+        }
+        val fail = node.fails.firstOrNull { it.hotspot == hotspotId } ?: node.fails.firstOrNull { it.hotspot == FailRule.ANY }
+        if (fail != null) {
+            state = state.copy(scene = fail.target, index = 0)
+            settle()
+            return UseResult.Reaction
+        }
+        return UseResult.Rejected(RejectReason.NO_EFFECT)
+    }
+
+    private fun visibleHotspots(node: Node.Explore): List<Hotspot> = node.hotspots.filter { it.isAvailable(state) }
+
     private fun nodeAt(s: GameState): Node = story.scenes.getValue(s.scene)[s.index]
 
     private fun isValidPosition(s: GameState): Boolean {
@@ -80,6 +159,10 @@ class StoryRunner(
                 is Node.Say, Node.End -> return
                 is Node.Choice -> {
                     check(visibleOptions(node).isNotEmpty()) { "в сцене «${state.scene}» нет доступных вариантов выбора" }
+                    return
+                }
+                is Node.Explore -> {
+                    check(visibleHotspots(node).isNotEmpty()) { "в сцене «${state.scene}» нет доступных областей для осмотра" }
                     return
                 }
                 is Node.SetFlag -> state = next(flags = state.flags + node.flag)

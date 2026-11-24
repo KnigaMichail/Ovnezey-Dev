@@ -21,7 +21,43 @@ data class Option(
     fun localized(language: Language): Option = copy(text = translations.resolve(text, language), translations = emptyMap())
 }
 
-/** Команда сценария. Say, Choice и End требуют реакции игрока, остальные выполняются автоматически. */
+/** Предмет. Иконка берётся из assets/items/<id>.png. [consume] значит, что предмет расходуется при успешном применении. */
+data class ItemDef(
+    val id: String,
+    val name: Named,
+    val description: Named = Named(""),
+    val consume: Boolean = false,
+)
+
+/**
+ * Активная область на иллюстрации локации. Координаты в долях картинки: [x], [y] левый верхний угол, [w], [h] размеры.
+ * Нажатие ведёт в сцену [target]. Область видна, если выполнено [condition].
+ */
+data class Hotspot(
+    val id: String,
+    val x: Float,
+    val y: Float,
+    val w: Float,
+    val h: Float,
+    val label: String,
+    val target: String,
+    val translations: Map<Language, String> = emptyMap(),
+    val condition: Condition? = null,
+) {
+    fun isAvailable(state: GameState): Boolean = condition?.test(state) ?: true
+}
+
+/** Применение предмета [item] на область [hotspot] ведёт в сцену [target], если выполнено [condition]. */
+data class UseRule(val item: String, val hotspot: String, val target: String, val condition: Condition? = null)
+
+/** Реакция на неподходящий предмет: для области [hotspot] или для любой, если [hotspot] равен [ANY]. */
+data class FailRule(val hotspot: String, val target: String) {
+    companion object {
+        const val ANY = "*"
+    }
+}
+
+/** Команда сценария. Say, Choice, Explore и End требуют реакции игрока, остальные выполняются автоматически. */
 sealed interface Node {
     /** Реплика персонажа или текст рассказчика ([speaker] == null). В [speaker] хранится идентификатор или имя из сценария. */
     data class Say(
@@ -40,6 +76,14 @@ sealed interface Node {
     data class Give(val item: String) : Node
     data class Take(val item: String) : Node
     data class SetLocation(val location: String) : Node
+
+    /** Осмотр локации: игрок нажимает на области или применяет к ним предметы. Выход из сцены задаёт сценарий переходами. */
+    data class Explore(
+        val hotspots: List<Hotspot>,
+        val uses: List<UseRule> = emptyList(),
+        val fails: List<FailRule> = emptyList(),
+    ) : Node
+
     data object End : Node
 }
 
@@ -52,6 +96,7 @@ class Story(
     val scenarioVersion: Int = 1,
     val characters: Map<String, Character> = emptyMap(),
     val locations: Map<String, Named> = emptyMap(),
+    val items: Map<String, ItemDef> = emptyMap(),
 ) {
     fun locationTitle(id: String?, language: Language): String? = id?.let { locations[it]?.get(language) }
 
