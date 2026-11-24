@@ -1,40 +1,50 @@
 package ru.uralgamebuilding.ovnezey
 
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import ru.uralgamebuilding.ovnezey.engine.GameState
 import ru.uralgamebuilding.ovnezey.engine.LoadResult
+import ru.uralgamebuilding.ovnezey.engine.RejectReason
 import ru.uralgamebuilding.ovnezey.engine.SaveSlots
 import ru.uralgamebuilding.ovnezey.engine.Side
 import ru.uralgamebuilding.ovnezey.engine.Step
 import ru.uralgamebuilding.ovnezey.engine.StoryRunner
+import ru.uralgamebuilding.ovnezey.engine.UseResult
 import java.io.IOException
+import java.util.Locale
 
 /**
- * Игровой экран: рассказчик и диалоги, персонажи слева и справа, выбор кнопками.
- * Вся логика сюжета в модуле engine, здесь только отображение и вызовы сохранения.
- * Партию задаёт меню или экран слотов через [Services.runner].
+ * Игровой экран: иллюстрация локации, рассказчик и диалоги, персонажи слева и справа, выбор кнопками,
+ * осмотр с областями нажатия и рюкзак. Вся логика сюжета в модуле engine, здесь только отображение
+ * и вызовы сохранения. Партию задаёт меню или экран слотов через [Services.runner].
  */
 class MainActivity : BaseActivity() {
     private var runner: StoryRunner? = null
+    private lateinit var scene: SceneView
     private lateinit var speakerView: TextView
     private lateinit var textView: TextView
     private lateinit var choicesView: LinearLayout
     private lateinit var portraitLeft: ImageView
     private lateinit var portraitRight: ImageView
     private lateinit var menuButton: Button
+    private lateinit var backpackButton: Button
+
+    /** Предмет, выбранный в рюкзаке для применения на область. Не сохраняется: это состояние интерфейса. */
+    private var selectedItem: String? = null
+    private var shownLocation: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_novel)
+        scene = findViewById(R.id.scene)
         speakerView = findViewById(R.id.speaker)
         textView = findViewById(R.id.text)
         choicesView = findViewById(R.id.choices)
@@ -44,21 +54,31 @@ class MainActivity : BaseActivity() {
         PixelUi.styleText(this, speakerView, color = PixelUi.ACCENT)
         PixelUi.styleText(this, textView)
         val m = PixelUi.metrics(this)
+        val root = findViewById<FrameLayout>(R.id.root)
         menuButton = PixelUi.button(this, getString(R.string.game_menu)) { showPauseMenu() }
-        findViewById<android.widget.FrameLayout>(R.id.root).addView(
+        root.addView(
             menuButton,
-            android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                android.view.Gravity.TOP or android.view.Gravity.END,
-            ).apply { setMargins(m.pad, m.pad, m.pad, m.pad) },
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END)
+                .apply { setMargins(m.pad, m.pad, m.pad, m.pad) },
         )
-        findViewById<View>(R.id.root).setOnClickListener { onTap() }
+        backpackButton = PixelUi.button(this, getString(R.string.backpack)) { showBackpack() }
+        root.addView(
+            backpackButton,
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START)
+                .apply { setMargins(m.pad, m.pad, m.pad, m.pad) },
+        )
+        root.setOnClickListener { onTap() }
+        scene.onSpotTap = { id -> onHotspot(id) }
+        scene.onEmptyTap = { clearSelection() }
+        scene.onDebugPoint = { x, y ->
+            Toast.makeText(this, String.format(Locale.US, "x=%.2f  y=%.2f", x, y), Toast.LENGTH_SHORT).show()
+        }
 
         val story = services.story
         if (story == null) {
             speakerView.text = ""
             textView.text = getString(R.string.story_error, services.storyError)
+            backpackButton.visibility = View.GONE
             return
         }
         runner = services.runner ?: restoreAutosave()
@@ -73,6 +93,8 @@ class MainActivity : BaseActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         runner = services.runner
+        selectedItem = null
+        shownLocation = null
         portraitLeft.visibility = View.INVISIBLE
         portraitRight.visibility = View.INVISIBLE
         render()
@@ -80,6 +102,7 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        scene.debug = services.settings.debugHotspots
         render()
     }
 
@@ -126,11 +149,21 @@ class MainActivity : BaseActivity() {
     private fun render() {
         val r = runner ?: return
         r.language = services.settings.language
+        val location = r.state.location
+        if (location != shownLocation) {
+            scene.setLocationImage(location?.let { AssetImages.location(this, it) })
+            shownLocation = location
+        }
+        if (selectedItem != null && r.inventoryItems.none { it.id == selectedItem }) selectedItem = null
+        backpackButton.visibility = if (r.inventoryItems.isEmpty()) View.GONE else View.VISIBLE
+
         choicesView.removeAllViews()
         choicesView.visibility = View.GONE
+        scene.setSpots(emptyList())
         when (val step = r.step) {
             is Step.Say -> showSay(step)
             is Step.Choose -> showChoices(step)
+            is Step.Explore -> showExplore(step)
             Step.End -> showEnd()
         }
     }
@@ -145,7 +178,7 @@ class MainActivity : BaseActivity() {
         }
         val id = step.speakerId
         if (active != null && id != null) {
-            val drawable = loadPortrait(id)
+            val drawable = AssetImages.portrait(this, id)
             if (drawable != null) {
                 active.setImageDrawable(drawable)
                 active.visibility = View.VISIBLE
@@ -173,6 +206,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun showExplore(step: Step.Explore) {
+        speakerView.text = ""
+        val name = runner?.inventoryItems?.firstOrNull { it.id == selectedItem }?.name
+        textView.text = if (name != null) getString(R.string.item_selected, name) else ""
+        scene.setSpots(step.hotspots.map { SceneView.Spot(it.id, it.label, it.x, it.y, it.w, it.h) })
+    }
+
     private fun showEnd() {
         speakerView.text = ""
         textView.text = ""
@@ -185,12 +225,61 @@ class MainActivity : BaseActivity() {
                     Toast.makeText(this, R.string.autosave_failed, Toast.LENGTH_SHORT).show()
                     return@button
                 }
+                selectedItem = null
+                shownLocation = null
                 portraitLeft.visibility = View.INVISIBLE
                 portraitRight.visibility = View.INVISIBLE
                 render()
             },
             PixelUi.matchWidth(this),
         )
+    }
+
+    /** Нажатие на область: переход в её сцену или применение выбранного предмета. */
+    private fun onHotspot(id: String) {
+        val r = runner ?: return
+        if (hasOverlay() || r.step !is Step.Explore) return
+        val before = r.state
+        val item = selectedItem
+        if (item == null) {
+            r.tap(id)
+            afterChange(before)
+            return
+        }
+        when (val result = r.useItem(item, id)) {
+            UseResult.Used, UseResult.Reaction -> {
+                selectedItem = null
+                afterChange(before)
+            }
+            is UseResult.Rejected -> {
+                if (result.reason == RejectReason.NO_EFFECT) {
+                    // Состояние не изменилось, предмет остаётся выбранным: можно попробовать другую область.
+                    textView.text = getString(R.string.item_no_effect)
+                } else {
+                    selectedItem = null
+                    render()
+                }
+            }
+        }
+    }
+
+    private fun clearSelection() {
+        if (selectedItem == null) return
+        selectedItem = null
+        render()
+    }
+
+    private fun showBackpack() {
+        val r = runner ?: return
+        if (hasOverlay()) return
+        val items = r.inventoryItems
+        if (items.isEmpty()) return
+        val content = BackpackPanel.build(this, items, canUse = r.step is Step.Explore) { item ->
+            dismissOverlay()
+            selectedItem = item.id
+            render()
+        }
+        showDialog(getString(R.string.backpack), null, listOf(DialogAction(getString(R.string.close)) {}), content)
     }
 
     private fun showPauseMenu() {
@@ -210,17 +299,5 @@ class MainActivity : BaseActivity() {
 
     private fun openSlots(mode: String) {
         startActivity(Intent(this, SlotsActivity::class.java).putExtra(SlotsActivity.EXTRA_MODE, mode))
-    }
-
-    /** Портрет персонажа ищется в assets/portraits/<идентификатор>.png; пока файла нет, показывается только имя. */
-    private fun loadPortrait(id: String): BitmapDrawable? = try {
-        assets.open("portraits/$id.png").use { stream ->
-            BitmapDrawable(resources, BitmapFactory.decodeStream(stream)).apply {
-                // пиксель-арт масштабируется без сглаживания
-                setFilterBitmap(false)
-            }
-        }
-    } catch (e: IOException) {
-        null
     }
 }

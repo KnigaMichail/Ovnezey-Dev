@@ -44,4 +44,14 @@
     <string name="save_failed">Could not write the save. The previous save has not been changed.</string>
     <string name="autosave_failed">Could not write the autosave</string>
     <string name="story_error">Story error:\n%s</string>
+
+    <string name="backpack">Backpack</string>
+    <string name="item_use">Use</string>
+    <string name="close">Close</string>
+    <string name="item_selected">Selected: %1$s. Tap an object.</string>
+    <string name="item_no_effect">This does not fit here.</string>
+
+    <string name="settings_hotspots">Hotspot overlay</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>

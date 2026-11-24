@@ -44,4 +44,14 @@
     <string name="save_failed">Не удалось записать сохранение. Прежнее сохранение не изменено.</string>
     <string name="autosave_failed">Не удалось записать автосохранение</string>
     <string name="story_error">Ошибка в сценарии:\n%s</string>
+
+    <string name="backpack">Рюкзак</string>
+    <string name="item_use">Использовать</string>
+    <string name="close">Закрыть</string>
+    <string name="item_selected">Выбрано: %1$s. Нажмите на объект.</string>
+    <string name="item_no_effect">Это сюда не подходит.</string>
+
+    <string name="settings_hotspots">Области нажатия</string>
+    <string name="on">Вкл</string>
+    <string name="off">Выкл</string>
 </resources>

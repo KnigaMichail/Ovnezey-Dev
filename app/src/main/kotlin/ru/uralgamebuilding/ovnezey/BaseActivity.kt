@@ -37,9 +37,9 @@ abstract class BaseActivity : Activity() {
         }
     }
 
-    protected fun showDialog(title: String?, message: String?, actions: List<DialogAction>) {
+    protected fun showDialog(title: String?, message: String?, actions: List<DialogAction>, content: View? = null) {
         dismissOverlay()
-        overlay = PixelUi.showDialog(this, title, message, actions) { overlay = null }
+        overlay = PixelUi.showDialog(this, title, message, actions, { overlay = null }, content)
     }
 
     protected fun hasOverlay(): Boolean = overlay != null

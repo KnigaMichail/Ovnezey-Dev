@@ -27,9 +27,9 @@ object PixelUi {
     val TEXT = 0xFFFFFFFF.toInt()
     val ACCENT = 0xFFFFD24D.toInt()
     val MUTED = 0xFF9A9AB4.toInt()
-    private val BORDER = 0xFF4A4A6A.toInt()
-    private val BUTTON = 0xFF18182A.toInt()
-    private val BUTTON_PRESSED = 0xFF2A2A44.toInt()
+    val BORDER = 0xFF4A4A6A.toInt()
+    val BUTTON = 0xFF18182A.toInt()
+    val BUTTON_PRESSED = 0xFF2A2A44.toInt()
     private val SCRIM = 0xB0000000.toInt()
 
     private var cachedTypeface: Typeface? = null
@@ -63,7 +63,7 @@ object PixelUi {
         view.paint.isAntiAlias = false
     }
 
-    private fun frame(fill: Int, border: Int, stroke: Int) = GradientDrawable().apply {
+    fun frame(fill: Int, border: Int, stroke: Int) = GradientDrawable().apply {
         shape = GradientDrawable.RECTANGLE
         setColor(fill)
         setStroke(stroke, border)
@@ -114,7 +114,14 @@ object PixelUi {
      * Диалог в виде слоя поверх содержимого экрана. Системные диалоги не используются: они выводят
      * системные панели из полноэкранного режима. Возвращает слой, чтобы его можно было убрать.
      */
-    fun showDialog(activity: Activity, title: String?, message: String?, actions: List<DialogAction>, onClose: () -> Unit): View {
+    fun showDialog(
+        activity: Activity,
+        title: String?,
+        message: String?,
+        actions: List<DialogAction>,
+        onClose: () -> Unit,
+        content: View? = null,
+    ): View {
         val m = metrics(activity)
         val dm = activity.resources.displayMetrics
         val root = FrameLayout(activity).apply {
@@ -132,6 +139,9 @@ object PixelUi {
         }
         if (message != null) {
             panel.addView(label(activity, message), matchWidth(activity, 2))
+        }
+        if (content != null) {
+            panel.addView(content, matchWidth(activity, 2))
         }
         for (action in actions) {
             panel.addView(button(activity, action.label) {

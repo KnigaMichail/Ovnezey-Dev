@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:background="#101018">
 
+    <ru.uralgamebuilding.ovnezey.SceneView
+        android:id="@+id/scene"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ImageView
         android:id="@+id/portraitLeft"
         android:layout_width="220dp"

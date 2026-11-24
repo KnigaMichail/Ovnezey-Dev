@@ -29,7 +29,13 @@ class AppSettings(context: Context) {
                 if (Resources.getSystem().configuration.locales.get(0).language == "ru") Language.RU else Language.EN
         }
 
+    /** Режим автора: показывать рамки областей нажатия и по долгому нажатию сообщать координаты. */
+    var debugHotspots: Boolean
+        get() = prefs.getBoolean(KEY_DEBUG_HOTSPOTS, false)
+        set(value) { prefs.edit().putBoolean(KEY_DEBUG_HOTSPOTS, value).apply() }
+
     private companion object {
         const val KEY_LANGUAGE = "language"
+        const val KEY_DEBUG_HOTSPOTS = "debug_hotspots"
     }
 }

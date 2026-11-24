@@ -33,6 +33,16 @@ class SettingsActivity : BaseActivity() {
             )
         }
         column.addView(PixelUi.spacing(this))
+        column.addView(PixelUi.label(this, getString(R.string.settings_hotspots), color = PixelUi.MUTED), PixelUi.matchWidth(this))
+        val debugOn = services.settings.debugHotspots
+        column.addView(
+            PixelUi.button(this, getString(if (debugOn) R.string.on else R.string.off)) {
+                services.settings.debugHotspots = !debugOn
+                recreate()
+            }.also { it.gravity = Gravity.START or Gravity.CENTER_VERTICAL },
+            PixelUi.matchWidth(this),
+        )
+        column.addView(PixelUi.spacing(this))
         column.addView(PixelUi.button(this, getString(R.string.back)) { finish() }, PixelUi.matchWidth(this))
 
         val width = (resources.displayMetrics.widthPixels * 0.55f).toInt()
