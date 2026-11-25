@@ -52,7 +52,7 @@ class Services private constructor(context: Context) {
     }
 
     companion object {
-        const val STORY_ASSET = "story/demo.ovn"
+        const val STORY_ASSET = "story/ovnezey.ovn"
 
         @Volatile
         private var instance: Services? = null

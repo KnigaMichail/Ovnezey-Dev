@@ -92,7 +92,8 @@ class SceneView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 fillPaint.color = PRESSED_FILL
                 canvas.drawRect(rect, fillPaint)
             }
-            if (pressed || debug) {
+            // Пока для локации нет картинки, рамки и названия областей видны всегда, иначе нечего нажимать.
+            if (pressed || debug || bitmap == null) {
                 linePaint.color = if (pressed) PixelUi.ACCENT else DEBUG_LINE
                 canvas.drawRect(rect, linePaint)
                 drawLabel(canvas, spot.label, rect, if (pressed) PixelUi.ACCENT else DEBUG_LINE, m.textPx)

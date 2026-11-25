@@ -1,0 +1,1176 @@
+# Овнезей. Пролог и Глава 1 (литературный черновик автора, перенос в формат .ovn).
+# Идентификаторы сцен и флагов совпадают с проектной документацией: сцены строчными, флаги ПРОПИСНЫМИ.
+# Русский текст в основной строке, английский сразу под ней в строке «|en ...».
+# Меняете структуру сюжета, повышайте версию в @scenario: старые сохранения с другой версией не загрузятся.
+@scenario ovnezey 1
+
+@character charlie Чарли
+|en Charlie
+@character sam Сэм
+|en Sam
+@character ellis ЭЛЛИС
+|en ELLIS
+@character scientist Учёный
+|en Scientist
+@character courier Курьер
+|en Courier
+@character creditor1 Сын кредитора
+|en Creditor's son
+@character creditor2 Сын кредитора
+|en Creditor's son
+@character worker Рабочий
+|en Worker
+@character technician Техник
+|en Technician
+@character guard Охранник
+|en Guard
+
+@item contact_module
+name: Собранный контактный модуль
+|en Assembled contact module
+desc: Самодельный узел из пластины, провода и контактного элемента.
+|en A homemade assembly of a plate, a wire and a contact element.
+
+# ---------------------------------------------------------------- ПРОЛОГ
+# PROLOGUE_01 — Лестница
+@scene start
+@location ark_stairs Ковчег. Лестница
+|en The Ark. Stairwell
+> Еле стоя на ногах, я плёлся по бесконечным узким ступенькам. Иногда оступался и чуть ли не лицом впечатывался в них.
+|en Barely able to stand, I dragged myself up the endless narrow steps. Now and then I stumbled and nearly smashed my face into them.
+> Грузные портфель и винтовка тянули вниз, пистолет выпал из порванной кобуры ещё где-то далеко внизу.
+|en The heavy briefcase and rifle dragged me down. My pistol had fallen out of the torn holster somewhere far below.
+> Мысли блохами прыгали в голове. Я не успевал зацепиться за них, уловить сущность.
+|en Thoughts hopped around my head like fleas. I could not catch one, could not grasp what it meant.
+> Отовсюду доносился гул огромных вентиляторов, которые впускали прохладный чистый воздух в это душное строение. На стенах то и дело искрили серебряными звёздочками провода.
+|en A hum of huge fans came from everywhere, pushing cool clean air into this stuffy building. Wires on the walls kept sparking silver stars.
+> Правая нога перестала слушаться. Царапины на бедре надоедающе саднили, а кровь, стекающая из разорванной икры, неприятно хлюпала в кроссовке.
+|en My right leg had stopped obeying me. The scratches on my thigh stung annoyingly, and blood running from my torn calf squelched unpleasantly in my sneaker.
+> Я на ходу терял сознание, начиная видеть предметы, которых на самом деле не существует. Например, перила, преграждающие мне путь, или одинокие туманные силуэты...
+|en I was losing consciousness as I walked, starting to see things that did not really exist. A railing blocking my way, for example, or lonely foggy silhouettes...
+> Вскоре я запнулся ногой о подступенок, окончательно потеряв равновесие. Выставив стёртые руки перед собой и упав на колени, я понял, что стою на ровной поверхности.
+|en Soon I caught my foot on a riser and lost my balance for good. I threw out my raw hands, dropped to my knees, and realized I was on level ground.
+> Я поднял залипшие от пота и крови глаза вверх. Взору предстала небольшая толстая железная гермодверь, освещаемая голубым светом лампы в стеклянном плафоне. Лампа была вмонтирована в стену справа от самой двери.
+|en I raised my eyes, glued shut with sweat and blood. Before me stood a small, thick iron airtight door, lit by the blue glow of a lamp in a glass shade. The lamp was set into the wall to the right of the door.
+> Меня повело в сторону. Я ухватился рукой за перила, выдохнул. С огромным усилием постарался подняться.
+|en I swayed sideways. I grabbed the railing and exhaled. With enormous effort I tried to get up.
+> Правая нога подкосилась, и с воплем я чуть было не перелетел через те самые перила, но благодаря чуду повис на поручне.
+|en My right leg gave out, and with a scream I almost tumbled over that very railing, but by some miracle I hung on to the handrail.
+> Балансируя на животе, я нервно всхлипывал, а там, далеко внизу, всё так же булькала вода...
+|en Balancing on my stomach, I sobbed nervously, and far below the water kept gurgling...
+> До крови прикусив нижнюю губу, я поднапрягся и упал обратно на площадку перед гермодверью.
+|en Biting my lower lip until it bled, I strained and fell back onto the landing in front of the airtight door.
+> Скользнула мысль: «И как подняться теперь?»
+|en A thought flickered: "How do I get up now?"
+> Неожиданно дверь шикнула и начала медленно отъезжать в сторону. Клубы оранжеватого дыма вырвались из-под неё. Чёрный силуэт вышагнул на площадку.
+|en Suddenly the door hissed and began to slide slowly aside. Clouds of orange-tinted smoke burst from beneath it. A black silhouette stepped onto the landing.
+> Моя голова совсем перестала соображать. В глазах резко потемнело, и не осталось сил даже на то, чтобы произнести хоть слово.
+|en My head stopped working altogether. Everything went dark, and I had no strength left to say even a word.
+> Силуэт медленно приблизился ко мне, склонился, а я тупо смотрел в одну точку — куда-то в пустоту...
+|en The silhouette slowly came closer and bent over me, while I stared dully at a single point, somewhere into the void...
+@goto prologue_02
+
+# PROLOGUE_02 — Лаборатория
+@scene prologue_02
+@location ark_lab Ковчег. Лаборатория
+|en The Ark. Laboratory
+> …Очнувшись, я почти вскрикнул: голубовато-белый свет ослепил меня. Я попытался закрыть его ладонью, но это не помогло. Его было слишком много.
+|en ...Coming to, I almost cried out: a bluish-white light blinded me. I tried to shield my eyes with my palm, but it did not help. There was too much of it.
+> Я лежал на холодном шершавом бетоне. Шум помех, жуткий скрежет и пиканье датчиков наполняли пространство. Но отчётливее всего доносился стук клавиатуры.
+|en I lay on cold, rough concrete. The noise of interference, a dreadful grinding and the beeping of sensors filled the space. But clearest of all was the clatter of a keyboard.
+> Здесь есть люди? Или вновь эти ржавые контуженые роботы? Но датчик на плече молчит...
+|en Are there people here? Or those rusty, shell-shocked robots again? But the sensor on my shoulder is silent...
+charlie@left: Эй...
+|en Hey...
+> Вскоре зрение восстановилось. Свет стал не таким ярким. Тот чёрный силуэт стоял напротив нескольких огромных экранов, на них скакали какие-то диаграммы.
+|en Soon my vision returned. The light was not so bright now. The black silhouette stood facing several huge screens, with diagrams jumping across them.
+charlie: Эй, ты!
+|en Hey, you!
+> Перевернувшись на спину и приподнявшись на локтях, мне удалось разглядеть этого человека. Именно человека...
+|en Rolling onto my back and propping myself on my elbows, I managed to make out the figure. A human being. Truly a human...
+> Но он не отзывался.
+|en But he did not respond.
+> В помещении было очень влажно: с потолка на бетон шлёпали капли, по закопчённым стенам пробегали дорожки воды. Ещё по стенам тянулись толстые кабели, под потолком — ржавые трубы.
+|en The room was very damp: drops splashed from the ceiling onto the concrete, and streaks of water ran down the sooty walls. Thick cables stretched along the walls, rusty pipes along the ceiling.
+> Несмотря на огромные экраны, освещения было недостаточно. Вокруг было темно.
+|en Despite the huge screens, there was not enough light. It was dark all around.
+> Опираясь на рядом стоящий железный шкаф, я поднялся.
+|en Leaning on an iron cabinet beside me, I got to my feet.
+charlie: Мужик!..
+|en Hey, mister!..
+> Человек повернулся. Я замер.
+|en The man turned around. I froze.
+scientist@right: Долгий же вам путь пришлось проделать, молодой человек.
+|en You have come a long way, young man.
+> Мужчина был явно не молод, голос его слегка хрипел.
+|en The man was clearly not young, and his voice was slightly hoarse.
+charlie: Что за?..
+|en What the?..
+> У меня кружилась голова, и путались мысли.
+|en My head was spinning and my thoughts tangled.
+charlie: Это же вы!.. Вы... Один из тех... Учёных. Один из... Тех... Тот эксперимент... Чёрт!
+|en It is you!.. You... One of those... Scientists. One of... Those... That experiment... Damn it!
+> Вновь перед глазами мелькнули помехи. Чёрное помещение на миг наполнилось белыми и разноцветными пиксельными полосами. Я поскользнулся, но устоял.
+|en Interference flashed before my eyes again. For an instant the black room filled with white and multicolored pixel stripes. I slipped but kept my feet.
+scientist: Да. Как долго ты шёл?
+|en Yes. How long have you been walking?
+charlie: Не всё равно?
+|en Does it matter?
+scientist: Просто спросил. Зачем ты здесь?
+|en Just asking. Why are you here?
+charlie: Издеваетесь?! Вы всё знаете! И то, что мне пришлось пережить! И весь мой чёртов маршрут! И о моём сбое!
+|en Are you mocking me?! You know everything! What I had to go through! My whole damn route! And my glitch!
+charlie: Вы прекрасно понимаете, что я сейчас вижу не белую стерильную лабораторию, а чёрное засранное помещение!!!
+|en You know perfectly well that right now I see not a white sterile laboratory but a black, filthy room!!!
+> У меня сбилось дыхание, в горле пересохло, я закашлялся.
+|en I was out of breath, my throat was dry, and I coughed.
+scientist: И ты прав. А ведь всё так просто. Разве ты сам не смог догадаться?
+|en And you are right. Yet it is all so simple. Could you not have guessed it yourself?
+> Учёный расслабленно усмехнулся.
+|en The scientist smiled lazily.
+charlie: Хах?
+|en Huh?
+> Быстро пришло осознание того, что силы окончательно покидают меня. Если этот старый хрыч будет медлить, я так тут и помру… Не узнав правды, не достигнув цели… Не починив сбой…
+|en Realization came quickly: my strength was leaving me for good. If this old geezer kept stalling, I would die right here... Without learning the truth, without reaching my goal... Without fixing the glitch...
+> А ведь я, даже починив сбой, не смогу вернуться к прежней жизни снова. Я просто не смогу забыть… Так много за плечами…
+|en And even once I fix the glitch, I will never be able to go back to my old life. I simply will not be able to forget... So much lies behind me...
+> Хах, надо же, не найдя документы отца, меня бы не сбила машина. Я бы не нашёл друга… Но и не потерял бы его… Я бы не увидел того, что за Границей... И не пострадал бы.
+|en Ha, how about that. If I had not found my father's documents, a car would not have hit me. I would not have found a friend... But I would not have lost him either... I would not have seen what lies beyond the Border... And I would not have suffered.
+> Но тогда всю свою последующую жизнь я, 524 номер, так и продолжал бы разбирать негодных роботов на переработке…
+|en But then for the rest of my life I, number 524, would have gone on dismantling scrap robots at the recycling plant...
+> А я не жалею… Просто не хочу умирать.
+|en And I do not regret it... I just do not want to die.
+charlie: Я… не знаю… Доктор, пожалуйста…
+|en I... do not know... Doctor, please...
+> Я выдохнул, склоняя голову.
+|en I exhaled, bowing my head.
+scientist: Что ж, это всего лишь…
+|en Well, it is merely...
+> Учёный не успел договорить, как вдруг за гермодверью послышались тяжёлые шаги. Я замер.
+|en The scientist did not finish, because suddenly heavy footsteps sounded behind the airtight door. I froze.
+> Бум!!!
+|en Boom!!!
+> Гулкий удар в дверь. Я повернул голову на звук.
+|en A hollow blow against the door. I turned my head toward the sound.
+> Снова. И снова… С каждым ударом я пригибался всё ниже и ниже к бетонному полу.
+|en Again. And again... With every blow I crouched lower and lower toward the concrete floor.
+> Бум! Бум! Бум!...
+|en Boom! Boom! Boom!...
+@goto prologue_03
+
+# PROLOGUE_03 — Воспоминание
+@scene prologue_03
+@location memory_flat Воспоминание
+|en Memory
+> * * *
+|en * * *
+charlie: Ах!..
+|en Ah!..
+> Я почувствовал невесомость и резкий удар обо что-то твёрдое.
+|en I felt weightless, then struck something hard.
+charlie: О, Госпадя…
+|en Oh, Lord...
+> Постанывая, я поднялся. Сделать это удалось на удивление легко. Потёр глаза тыльной стороной ладони, хорошенько зевнул.
+|en Groaning, I got up. It was surprisingly easy. I rubbed my eyes with the back of my hand and yawned widely.
+> На ногах были зелёные носки и серые домашние штаны, на теле — зеленоватая футболка с длинными рукавами.
+|en I was wearing green socks and gray sweatpants, and a greenish long-sleeved T-shirt.
+charlie: Что?!
+|en What?!
+> И стою я… на полу, на обычной паркетной доске. И упал я… с дивана.
+|en And I am standing... on the floor, on ordinary parquet. And I fell... off a sofa.
+charlie: Ааа!
+|en Aaah!
+> Я вскрикнул, когда услышал стук вновь. Но теперь это были не те размашистые удары, а лишь лёгкое «тук-тук».
+|en I cried out when I heard the knocking again. But now it was not those sweeping blows, only a light "knock-knock."
+> Я поспешил открыть дверь. Пробежавшись по паркету, я перешёл на линолеум. Открыв тёмно-коричневую сейф-дверь, я остолбенел: на обычном лестничном пролёте стояла милая брюнеточка с волосами, убранными в конский хвост.
+|en I hurried to open the door. I ran across the parquet onto linoleum. Opening the dark-brown safe-door, I stood stunned: on an ordinary stair landing stood a pretty brunette with her hair in a ponytail.
+> На ней была сочная жёлтая футболка, такая же кепка, синие джинсы и белые кеды. При ней также была объёмная сумка через плечо.
+|en She wore a bright yellow T-shirt, a matching cap, blue jeans and white sneakers. A bulky bag hung from her shoulder.
+courier@right: Вы заказывали пиццу к четырём часам дня.
+|en You ordered a pizza for four o'clock.
+> Она подала мне белую картонную коробку. Я с диким выражением лица принял её.
+|en She handed me a white cardboard box. I took it with a wild look on my face.
+courier: Оплата была произведена с вашей банковской карты. Пожалуйста, распишитесь.
+|en Payment was made from your bank card. Please sign here.
+> Девчонка протянула планшет с прикреплённым к нему стилусом. Я быстро черкнул что-то неразборчивое.
+|en The girl held out a tablet with a stylus attached to it. I quickly scrawled something illegible.
+courier: Большое спасибо.
+|en Thank you very much.
+charlie: И тебе.
+|en You too.
+> Девчонка убрала планшет в сумку и направилась вниз по ступенькам. Так, остолбенев, я и остался стоять в дверном проёме. Но вдруг опомнился.
+|en The girl put the tablet in her bag and headed down the steps. I stayed in the doorway, stunned. Then suddenly I came to.
+charlie: Эй, какой сейчас год?!
+|en Hey, what year is it?!
+courier: Вы шутите?
+|en Are you joking?
+charlie: Ничуть!
+|en Not at all!
+courier: Две тысячи девятнадцатый!
+|en Two thousand nineteen!
+charlie: Ага…
+|en Right...
+> Я закрыл дверь и вернулся в комнатку. Усевшись на диван, я положил коробку с пиццей рядом с собой.
+|en I closed the door and went back to the little room. Sitting down on the sofa, I put the pizza box next to me.
+> Это был сон?..
+|en Was it a dream?..
+@goto ch1_scene_01
+
+# ---------------------------------------------------------------- ГЛАВА 1. ПРОБУЖДЕНИЕ
+# CH1_SCENE_01 — Пробуждение Чарли
+@scene ch1_scene_01
+@location apartment Квартира Чарли
+|en Charlie's apartment
+> Я резко открыл глаза.
+|en I opened my eyes sharply.
+> Первое, что увидел, — потолок. Знакомый потолок моей квартиры. Второе — лицо Сэма, который сидел рядом и явно не собирался никуда уходить.
+|en The first thing I saw was a ceiling. The familiar ceiling of my apartment. The second was Sam's face; he sat beside me and clearly had no intention of going anywhere.
+sam@right: Долго собираешься изображать труп?
+|en Planning to play dead much longer?
+charlie@left: А ты долго собираешься сидеть у меня дома?
+|en Planning to sit in my home much longer?
+sam: Пока не убедюсь, что ты окончательно не превратился в мебель.
+|en Until I am sure you have not turned into furniture for good.
+> Я попытался приподняться. Голова тут же напомнила, что это была плохая идея.
+|en I tried to sit up. My head immediately reminded me that this was a bad idea.
+sam: Полегче, герой. Ты ещё не настолько здоров, чтобы изображать бессмертного.
+|en Easy, hero. You are not healthy enough yet to play the immortal.
+> Я опустился обратно и несколько секунд смотрел в потолок.
+|en I lay back down and stared at the ceiling for a few seconds.
+> Сэм сидел на стуле возле дивана. Его правая рука была зафиксирована повязкой и выглядела не лучшим образом.
+|en Sam sat on a chair by the sofa. His right arm was in a bandage and did not look good.
+charlie: Что с рукой?
+|en What happened to your arm?
+sam: Ничего особенного. Решил проверить, насколько крепкие у нас двери.
+|en Nothing special. I decided to test how sturdy our doors are.
+charlie: И как?
+|en And how are they?
+sam: Двери победили.
+|en The doors won.
+> Я невольно усмехнулся. Сэм не улыбнулся, но по его лицу было понятно, что он рад видеть меня в сознании.
+|en I grinned despite myself. Sam did not smile, but his face made it clear he was glad to see me awake.
+sam: Ты вообще помнишь, что произошло?
+|en Do you even remember what happened?
+> Я попробовал восстановить события. В голове всплывали обрывки: шум, какие-то движения, металлический скрежет. Потом всё смешалось.
+|en I tried to piece the events together. Fragments surfaced in my head: noise, some movement, a metallic screech. Then it all blurred.
+charlie: Последнее, что помню, — что мне нужно было поспать.
+|en The last thing I remember is that I needed to sleep.
+sam: Ну, поспал ты знатно.
+|en Well, you slept in grand style.
+@choice
+* «Последнее, что помню, — что мне нужно было поспать». -> ch1_choice_01_a
+|en "The last thing I remember is that I needed to sleep."
+* «Нет. И это меня беспокоит». -> ch1_choice_01_b
+|en "No. And that worries me."
+* «Не сейчас, Сэм. Дай прийти в себя». -> ch1_choice_01_c
+|en "Not now, Sam. Let me come to."
+
+@scene ch1_choice_01_a
+@set CH1_SAM_JOKED
+@param sam_trust +1
+sam@right: Значит, хотя бы в этом ты преуспел. В следующий раз попробуй просто лечь в кровать.
+|en So at least you succeeded at that. Next time, try simply going to bed.
+@goto ch1_scene_02
+
+@scene ch1_choice_01_b
+@set CH1_SAM_SERIOUS
+@param sam_trust +1
+charlie@left: Нет. И это меня беспокоит.
+|en No. And that worries me.
+sam@right: Меня тоже. Особенно учитывая, в каком состоянии я тебя нашёл.
+|en Me too. Especially considering the state I found you in.
+> Он на секунду замолчал.
+|en He fell silent for a second.
+sam: Но сейчас ты хотя бы разговариваешь. Уже неплохо.
+|en But at least you are talking now. That is not bad.
+@goto ch1_scene_02
+
+@scene ch1_choice_01_c
+@set CH1_SAM_AVOID
+charlie@left: Не сейчас, Сэм. Дай прийти в себя.
+|en Not now, Sam. Let me come to.
+sam@right: Ладно. Не буду доставать.
+|en Fine. I will not pester you.
+> Сэм откинулся на спинку стула.
+|en Sam leaned back in his chair.
+sam: Только не вздумай снова отключиться. Второй раз я тебя на руках таскать не собираюсь.
+|en Just do not you dare pass out again. I am not going to carry you a second time.
+@goto ch1_scene_02
+
+# CH1_SCENE_02 — ЭЛЛИС
+@scene ch1_scene_02
+> Из соседней комнаты послышался знакомый механический звук. Через несколько секунд в дверном проёме появился небольшой домашний робот.
+|en A familiar mechanical sound came from the next room. A few seconds later a small household robot appeared in the doorway.
+ellis@right: Хо-зя-ин. Вы на-ко-нец пришли в со-зна-ние.
+|en Mas-ter. You have fi-nal-ly re-gain-ed con-scious-ness.
+charlie@left: И тебе доброе утро, железяка.
+|en Good morning to you too, tin can.
+ellis: Текущее время: 07:42. Ваше определение утра соответствует расписанию.
+|en Current time: 07:42. Your definition of morning matches the schedule.
+charlie: Рад, что хотя бы у кого-то здесь всё по расписанию.
+|en Glad that at least someone here is on schedule.
+> ЭЛЛИС подъехал ближе и остановился возле дивана. Его оптический модуль несколько раз изменил фокус.
+|en ELLIS rolled closer and stopped beside the sofa. His optical module refocused several times.
+ellis: Состояние владельца: нестабильное. Рекомендую избегать резких движений.
+|en Owner's condition: unstable. I recommend avoiding sudden movements.
+charlie: Передай это моему начальнику.
+|en Tell that to my boss.
+ellis: У меня отсутствуют полномочия для передачи подобных сообщений.
+|en I lack the authority to relay such messages.
+charlie: Как всегда, очень полезен.
+|en Very helpful, as always.
+> Сэм тихо усмехнулся.
+|en Sam chuckled quietly.
+sam: Вообще-то, если бы не он, ты бы сейчас со мной не разговаривал.
+|en Actually, if it were not for him, you would not be talking to me right now.
+> Я посмотрел на робота.
+|en I looked at the robot.
+charlie: И давно ты работаешь на медицинском факультете?
+|en Since when do you work at a medical school?
+ellis: Я выполнил первичную диагностику, обработал повреждения и вызвал медицинскую помощь. Ваш друг прибыл раньше специалистов.
+|en I performed primary diagnostics, treated the injuries and called for medical help. Your friend arrived before the specialists.
+sam: Повезло тебе. Я хотя бы не требую оплаты за каждое движение.
+|en Lucky you. At least I do not charge for every movement.
+charlie: За каждое движение? Ты уже собираешься выставить счёт?
+|en For every movement? Are you already planning to send a bill?
+sam: С учётом твоего долга я бы сначала проверил, есть ли у тебя вообще чем платить.
+|en Considering your debt, I would first check whether you have anything to pay with.
+> Я проигнорировал последнюю реплику.
+|en I ignored that last remark.
+charlie: ЭЛЛИС, что со мной произошло?
+|en ELLIS, what happened to me?
+> Робот выдержал небольшую паузу.
+|en The robot held a short pause.
+ellis: Последний анализ крови выявил токсичное вещество неизвестного происхождения. На момент проведения повторного анализа критических отклонений не обнаружено. Рекомендовано дополнительное медицинское обследование.
+|en The latest blood test revealed a toxic substance of unknown origin. At the time of the repeat test, no critical deviations were found. Further medical examination is recommended.
+charlie: Токсичное вещество? Откуда?
+|en A toxic substance? From where?
+ellis: Источник заражения не установлен.
+|en The source of contamination has not been established.
+charlie: А ты не можешь установить?
+|en Can you not establish it?
+ellis: Доступных данных недостаточно.
+|en Available data is insufficient.
+> Сэм наклонился вперёд.
+|en Sam leaned forward.
+sam: Ты тогда почти не реагировал. Я думал, что уже не успею.
+|en You barely responded then. I thought I would not make it in time.
+> Он произнёс это спокойно, но в голосе на секунду пропала привычная насмешка.
+|en He said it calmly, but for a second the usual mockery vanished from his voice.
+sam: В общем, не советую повторять.
+|en Anyway, I do not recommend repeating it.
+charlie: Постараюсь.
+|en I will try.
+ellis: И ещё кое-что. Согласно рабочему расписанию, сегодня у вас первая смена.
+|en One more thing. According to your work schedule, you have the first shift today.
+> Я закрыл глаза.
+|en I closed my eyes.
+charlie: Вот теперь утро действительно испортилось.
+|en Now the morning is truly ruined.
+sam: Удивительно. Человек только что очнулся после отравления, а его больше беспокоит работа.
+|en Remarkable. A man has just woken up after being poisoned, and what worries him more is work.
+charlie: Ты бы видел мои счета.
+|en You should see my bills.
+sam: Видел. Поэтому и удивляюсь, что ты ещё способен шутить.
+|en I have. That is why I am surprised you can still joke.
+@goto ch1_scene_03
+
+# CH1_SCENE_03 — Квартира
+@scene ch1_scene_03
+> Я осторожно сел на диване и опустил ноги на пол.
+|en I carefully sat up on the sofa and lowered my feet to the floor.
+sam: Не торопись.
+|en Do not rush.
+charlie: У меня первая смена.
+|en I have the first shift.
+sam: У тебя была возможность умереть, но ты решил, что завод важнее.
+|en You had a chance to die, but you decided the factory matters more.
+charlie: У каждого свои приоритеты.
+|en Everyone has their priorities.
+> Я поднялся. Несколько секунд пришлось постоять на месте, пока голова окончательно не перестала кружиться.
+|en I stood up. I had to stay in place for a few seconds until my head finally stopped spinning.
+> Квартира выглядела привычно. Те же стены, та же мебель, тот же тусклый свет. Всё находилось на своих местах.
+|en The apartment looked as usual. The same walls, the same furniture, the same dim light. Everything was in its place.
+> И всё же было странное ощущение, будто я давно здесь не был.
+|en And yet there was a strange feeling that I had not been here for a long time.
+> ЭЛЛИС остановился рядом.
+|en ELLIS stopped beside me.
+ellis: Рекомендую не совершать резких движений.
+|en I recommend avoiding sudden movements.
+charlie: Ты уже говорил.
+|en You already said that.
+ellis: Повторение информации повышает вероятность её усвоения.
+|en Repeating information increases the likelihood that it is retained.
+charlie: Тогда повтори, что у меня сегодня выходной.
+|en Then repeat that I have a day off today.
+ellis: Согласно расписанию, это неверно.
+|en According to the schedule, that is incorrect.
+charlie: Попытка засчитана.
+|en Nice try, though.
+> Я оглядел комнату. Если уж я всё равно проснулся, стоило убедиться, что здесь ничего не произошло, пока я был без сознания.
+|en I looked around the room. Since I was awake anyway, it was worth making sure that nothing had happened here while I was unconscious.
+@goto ch1_scene_04
+
+# CH1_SCENE_04 — Осмотр квартиры.
+# Координаты областей условные, пока нет картинки assets/locations/apartment.png.
+# Повторный осмотр объекта ведёт в ch1_04_again и не выдаёт новых сведений.
+@scene ch1_scene_04
+@explore
+* table 0.08 0.55 0.25 0.30 Стол -> ch1_04_table
+|en Table
+* ellis 0.40 0.58 0.14 0.26 ЭЛЛИС -> ch1_04_ellis
+|en ELLIS
+* sam 0.58 0.28 0.16 0.50 Сэм -> ch1_04_sam
+|en Sam
+* door 0.84 0.22 0.12 0.52 Входная дверь -> ch1_04_door
+|en Front door
+* done 0.30 0.90 0.40 0.09 Закончить осмотр -> ch1_scene_05
+|en Stop looking around
+
+@scene ch1_04_again
+> Здесь я уже всё осмотрел.
+|en I have already examined everything here.
+@goto ch1_scene_04
+
+@scene ch1_04_table
+@if CH1_INSPECTED_TABLE -> ch1_04_again
+@set CH1_INSPECTED_TABLE
+> На столе лежали несколько старых квитанций, кружка и разобранный электронный модуль.
+|en On the table lay a few old receipts, a mug and a dismantled electronic module.
+> Ничего необычного. Обычный беспорядок, который я постоянно собирался разобрать, но каждый раз находил занятие поважнее.
+|en Nothing unusual. The usual mess I was always going to sort out, but every time I found something more important to do.
+> Я взял модуль и повертел в руках.
+|en I picked up the module and turned it over in my hands.
+sam@right: Опять пытаешься собрать что-то из хлама?
+|en Trying to build something out of junk again?
+charlie@left: Это не хлам. Просто пока не работает.
+|en It is not junk. It just does not work yet.
+sam: У тебя всё так называется.
+|en Everything is called that with you.
+> Я положил модуль обратно.
+|en I put the module back.
+@goto ch1_scene_04
+
+@scene ch1_04_ellis
+@if CH1_KNOWS_FAMILY_ARCHIVE -> ch1_04_again
+> Робот повернул оптический модуль в мою сторону.
+|en The robot turned its optical module toward me.
+ellis@right: Запрос?
+|en Query?
+charlie@left: Ты сказал, что вызвал помощь. Что ещё делал, пока я был без сознания?
+|en You said you called for help. What else did you do while I was unconscious?
+ellis: Поддерживал работу систем жизнеобеспечения, проводил диагностику и осуществлял мониторинг состояния владельца.
+|en I maintained life support, ran diagnostics and monitored the owner's condition.
+charlie: А до этого?
+|en And before that?
+ellis: Уточните запрос.
+|en Please clarify the query.
+charlie: Ты же хранишь семейные архивы?
+|en You keep the family archives, do you not?
+ellis: Подтверждаю. В архиве имеются данные семьи Эфкиндз, включая документы, связанные с Реинодом Эфкиндзом.
+|en Confirmed. The archive holds data on the Efkindz family, including documents connected to Reinod Efkindz.
+> Я посмотрел на робота внимательнее.
+|en I looked at the robot more closely.
+charlie: Документы отца?
+|en My father's documents?
+ellis: Подтверждаю.
+|en Confirmed.
+charlie: И что в них?
+|en And what is in them?
+ellis: Для просмотра требуется отдельный запрос.
+|en A separate query is required for viewing.
+> Я хотел продолжить, но остановился. Не сейчас. Сначала нужно было прийти в себя. Да и не хотелось разбираться в старых бумагах при Сэме.
+|en I wanted to go on but stopped. Not now. First I needed to pull myself together. And I did not feel like digging through old papers in front of Sam.
+@set CH1_KNOWS_FAMILY_ARCHIVE
+@goto ch1_scene_04
+
+@scene ch1_04_sam
+@if CH1_TALKED_TO_SAM -> ch1_04_again
+@set CH1_TALKED_TO_SAM
+> Сэм сидел на стуле и рассматривал собственную повязку.
+|en Sam sat on the chair, studying his own bandage.
+charlie@left: Ты собираешься объяснить, что произошло с твоей рукой?
+|en Are you going to explain what happened to your arm?
+sam@right: Уже объяснил. Двери победили.
+|en I already did. The doors won.
+charlie: Сэм.
+|en Sam.
+sam: Ладно. Когда я добрался до тебя, всё было не очень хорошо. Пришлось немного потрудиться.
+|en Fine. When I got to you, things were not good. I had to put in some work.
+charlie: Немного?
+|en Some work?
+sam: Не начинай. У меня и так настроение испорчено.
+|en Do not start. My mood is already ruined.
+> Я посмотрел на его руку.
+|en I looked at his arm.
+charlie: Ты тоже должен показаться врачу.
+|en You should see a doctor too.
+sam: Я врач.
+|en I am a doctor.
+charlie: Тем более.
+|en All the more reason.
+sam: Вот поэтому я и не люблю лечить знакомых. Они начинают спорить.
+|en That is why I do not like treating friends. They start arguing.
+> Он поднялся со стула, но тут же поморщился.
+|en He rose from the chair but immediately winced.
+sam: Ладно, сегодня я никуда не тороплюсь. А вот тебе лучше всё-таки добраться до работы и не устраивать новых приключений.
+|en Fine, I am in no hurry today. You, though, had better get to work and not stir up any new adventures.
+@goto ch1_scene_04
+
+@scene ch1_04_door
+@if CH1_CHECKED_DOOR -> ch1_04_again
+@set CH1_CHECKED_DOOR
+> Я подошёл к двери и осмотрел замок.
+|en I went to the door and examined the lock.
+> Всё выглядело обычно. Никаких явных повреждений или следов того, что кто-то пытался попасть внутрь.
+|en Everything looked ordinary. No obvious damage and no sign that anyone had tried to get in.
+sam@right: Что-то не так?
+|en Something wrong?
+charlie@left: Нет. Просто проверяю.
+|en No. Just checking.
+sam: Если кто-то и приходил, ЭЛЛИС бы сообщил.
+|en If anyone had come, ELLIS would have reported it.
+charlie: Надеюсь.
+|en I hope so.
+> Я вернулся в комнату.
+|en I went back into the room.
+@goto ch1_scene_04
+
+# CH1_SCENE_05 — Перед выходом
+@scene ch1_scene_05
+> Сэм уже направился к выходу, когда я остановил его.
+|en Sam was already heading for the exit when I stopped him.
+charlie@left: Подожди. Ты сказал, что добрался до меня. Как именно?
+|en Wait. You said you got to me. How, exactly?
+sam@right: Вызвал меня ЭЛЛИС. Я приехал, когда ты уже был не в состоянии нормально отвечать.
+|en ELLIS called me. I came when you were already in no state to answer properly.
+charlie: А что случилось до этого?
+|en And what happened before that?
+> Сэм посмотрел на меня.
+|en Sam looked at me.
+sam: Чарли, я не знаю. Я не был рядом с самого начала. И не собираюсь придумывать тебе объяснения.
+|en Charlie, I do not know. I was not there from the start. And I am not going to make up explanations for you.
+> Он говорил без раздражения. Просто констатировал факт.
+|en He spoke without irritation. He was simply stating a fact.
+sam: Но кое-что я заметил. Ты был явно не в порядке ещё до того, как я тебя нашёл.
+|en But I did notice something. You were clearly not okay even before I found you.
+charlie: Очень обнадёживает.
+|en Very reassuring.
+sam: Я серьёзно.
+|en I am serious.
+ellis@right: Дополнительная диагностика позволит уточнить характер воздействия неизвестного вещества.
+|en Additional diagnostics would clarify the nature of the unknown substance's effect.
+> Я посмотрел на робота, потом на Сэма.
+|en I looked at the robot, then at Sam.
+@choice
+* Отправиться на работу. -> ch1_choice_02_a
+|en Go to work.
+* Попросить ЭЛЛИС провести дополнительную диагностику. -> ch1_choice_02_b
+|en Ask ELLIS to run additional diagnostics.
+
+@scene ch1_choice_02_a
+@set CH1_GO_TO_WORK
+charlie@left: Разберусь позже. Если пропущу смену, проблем будет больше.
+|en I will deal with it later. If I skip the shift, there will be more trouble.
+sam@right: Тогда хотя бы не геройствуй. Почувствуешь себя хуже — сразу обращайся за помощью.
+|en Then at least do not play the hero. If you feel worse, ask for help right away.
+> Сэм кивнул.
+|en Sam nodded.
+@goto ch1_scene_06
+
+@scene ch1_choice_02_b
+@set CH1_REQUESTED_DIAGNOSTICS
+charlie@left: ЭЛЛИС, запусти повторную проверку. Хочу знать, что именно со мной произошло.
+|en ELLIS, run the check again. I want to know what exactly happened to me.
+ellis@right: Подтверждаю запрос. Для расширенного анализа необходим дополнительный медицинский модуль.
+|en Request confirmed. Extended analysis requires an additional medical module.
+charlie: У нас его нет?
+|en We do not have one?
+ellis: В текущей комплектации отсутствует.
+|en Not in the current configuration.
+> Сэм покачал головой.
+|en Sam shook his head.
+sam: Значит, придётся обратиться в медицинский пункт. Но не затягивай.
+|en Then you will have to go to a medical station. But do not put it off.
+> Домашней диагностики недостаточно. Смена от этого не отменяется.
+|en Home diagnostics are not enough. The shift is not cancelled because of it.
+@goto ch1_scene_06
+
+# CH1_SCENE_06 — Эдем-2
+@scene ch1_scene_06
+@location eden_street Эдем-2. Улица
+|en Eden Two. Street
+> Дверь квартиры закрылась за мной.
+|en The apartment door closed behind me.
+> Эдем-2 встретил меня привычным шумом утреннего города. Люди спешили по своим делам, транспорт двигался по установленным маршрутам, а над улицами висело знакомое синеватое небо.
+|en Eden Two greeted me with the familiar noise of a morning city. People hurried about their business, transport moved along set routes, and the familiar bluish sky hung over the streets.
+> Я остановился на секунду и посмотрел вверх. Облака почти не менялись. Как обычно.
+|en I stopped for a second and looked up. The clouds hardly changed. As usual.
+> В этом городе всё было устроено так, чтобы человек не задавал лишних вопросов. Работа, жильё, питание, медицинское обслуживание — для всего существовали свои правила и свои службы.
+|en This city was arranged so that a person would not ask unnecessary questions. Work, housing, food, medical care: everything had its own rules and its own services.
+> Даже ремонт техники давно перестал быть личной проблемой. Для этого были специальные компании. Бесплатные, как любили говорить рекламные экраны.
+|en Even repairing equipment had long ceased to be a personal matter. There were special companies for that. Free, as the advertising screens liked to say.
+> Я прошёл мимо одного из таких экранов.
+|en I walked past one of those screens.
+> РЕКЛАМА: «Ваше устройство заслуживает профессионального обслуживания. Не рискуйте — доверьтесь сертифицированным специалистам».
+|en ADVERTISEMENT: "Your device deserves professional service. Do not take risks: trust certified specialists."
+> Я вспомнил стол и разобранный модуль. Похоже, самостоятельный ремонт постепенно становился чем-то вроде дурной привычки.
+|en I thought of the table and the dismantled module. It seemed that repairing things yourself was gradually becoming a kind of bad habit.
+> По дороге на завод я заметил несколько рабочих, стоявших возле терминала. Один из них пытался разобраться с начислениями за жильё. Второй что-то доказывал сотруднику службы поддержки.
+|en On the way to the factory I noticed several workers standing by a terminal. One was trying to make sense of his housing charges. Another was arguing something with a support employee.
+> Я не стал задерживаться. У каждого здесь были свои проблемы.
+|en I did not linger. Everyone here had their own problems.
+@goto ch1_scene_07
+
+# CH1_SCENE_07 — Дорога на завод
+@scene ch1_scene_07
+> Я подумал, каким путём пройти до завода.
+|en I considered which way to take to the factory.
+@choice
+* Через центральную улицу. -> ch1_choice_03_a
+|en Along the central street.
+* Через технический переход. -> ch1_choice_03_b
+|en Through the service passage.
+
+@scene ch1_choice_03_a
+@location eden_center Эдем-2. Центральная улица
+|en Eden Two. Central street
+@set CH1_SAW_CITY_ADS
+> Я пошёл по привычному маршруту. Здесь всегда было людно, а рекламные экраны работали без перебоев.
+|en I took my usual route. It was always crowded here, and the advertising screens ran without interruption.
+> На одном из них показывали отчёт о производственных успехах Эдем-2.
+|en One of them showed a report on the production successes of Eden Two.
+> «Стабильность. Безопасность. Будущее».
+|en "Stability. Safety. The future."
+> Я ускорил шаг.
+|en I quickened my pace.
+@goto ch1_scene_08
+
+@scene ch1_choice_03_b
+@location eden_tech Эдем-2. Технический переход
+|en Eden Two. Service passage
+@set CH1_SAW_TECH_WARNING
+> Технический переход был короче, но выглядел куда менее ухоженным.
+|en The service passage was shorter but looked far less well kept.
+> На стене висело предупреждение о запрете самостоятельного вмешательства в городские коммуникации.
+|en A warning on the wall forbade independent interference with city utilities.
+> Я прошёл мимо, не задерживаясь.
+|en I walked past without stopping.
+@goto ch1_scene_08
+
+# CH1_SCENE_08 — Плавильня
+@scene ch1_scene_08
+@location plant Плавильня
+|en The Smelter
+> Завод встретил меня привычным гулом. Металл, горячий воздух, шум оборудования и постоянные объявления по внутренней связи. Здесь время измерялось не часами, а сменами.
+|en The factory greeted me with its usual drone. Metal, hot air, the noise of machinery and constant announcements over the intercom. Here time was measured not in hours but in shifts.
+> Я прошёл через пропускной пункт. Терминал считал мой номер.
+|en I went through the checkpoint. The terminal read my number.
+> №524. ДОПУСК ПОДТВЕРЖДЁН.
+|en No. 524. ACCESS CONFIRMED.
+creditor1@right: О, смотрите, кто решил вернуться к жизни.
+|en Oh, look who decided to come back to life.
+> Я обернулся. Передо мной стоял один из сыновей кредитора. Рядом с ним находился второй.
+|en I turned around. One of the creditor's sons stood in front of me. The other stood next to him.
+creditor1: А я уж думал, что мы потеряли нашего любимого должника.
+|en And here I thought we had lost our favorite debtor.
+charlie@left: Не переживай. Я постараюсь не доставлять вам такого удовольствия.
+|en Do not worry. I will try not to give you that pleasure.
+creditor1: Вот это уже лучше. Значит, разговаривать можешь.
+|en Now that is better. So you can talk.
+> Первый сделал шаг ближе.
+|en The first stepped closer.
+creditor1: Нам нужна информация.
+|en We need information.
+charlie: Какая именно?
+|en What kind exactly?
+creditor1: Не прикидывайся. Ты знаешь, о чём речь.
+|en Do not pretend. You know what this is about.
+> Я промолчал.
+|en I said nothing.
+creditor1: И ещё твой КПК. Нам нужно проверить кое-что.
+|en And your PDA too. We need to check something.
+charlie: С чего бы мне его отдавать?
+|en Why would I hand it over?
+creditor1: С того, что твой отец остался должен. А долги, как ты знаешь, никуда не исчезают.
+|en Because your father still owed. And debts, as you know, never disappear.
+> Второй усмехнулся.
+|en The second one smirked.
+creditor2@right: Особенно семейные.
+|en Especially family ones.
+> Я сжал челюсть. Они прекрасно знали, куда давить. История с отцом давно перестала быть просто долгом. Каждый раз, когда я пытался закрыть хотя бы часть задолженности, появлялись новые требования.
+|en I clenched my jaw. They knew exactly where to press. The story with my father had long stopped being just a debt. Every time I tried to pay off even part of it, new demands appeared.
+charlie: Сейчас я на смене.
+|en I am on shift right now.
+creditor1: Значит, после смены поговорим.
+|en Then we will talk after the shift.
+> Они отошли, но я понимал: просто так эта встреча не закончится.
+|en They moved away, but I understood that this meeting would not end that easily.
+@choice
+* «Мой КПК вас не касается». -> ch1_choice_04_a
+|en "My PDA is none of your business."
+* «Сначала объясните, что вам нужно». -> ch1_choice_04_b
+|en "First explain what you need."
+* Не отвечать и пройти дальше. -> ch1_choice_04_c
+|en Say nothing and walk on.
+
+@scene ch1_choice_04_a
+@set CH1_REFUSED_PDA
+@param creditor_attitude -1
+charlie@left: Это моё устройство. И я не собираюсь отдавать его кому попало.
+|en It is my device. And I am not going to give it to just anyone.
+creditor1@right: Тогда не удивляйся, если разговор станет неприятнее.
+|en Then do not be surprised if the conversation gets nastier.
+@goto ch1_scene_09
+
+@scene ch1_choice_04_b
+@set CH1_ASKED_CREDITORS
+@param creditor_info +1
+charlie@left: Вы постоянно говорите про какую-то информацию. Может, наконец объясните, что именно ищете?
+|en You keep talking about some information. Maybe you will finally explain what exactly you are looking for?
+> Они переглянулись.
+|en They exchanged glances.
+creditor1@right: Не твоё дело. Просто передай, если найдёшь.
+|en None of your business. Just pass it on if you find it.
+charlie: Очень содержательно.
+|en Very informative.
+@goto ch1_scene_09
+
+@scene ch1_choice_04_c
+@set CH1_IGNORED_CREDITORS
+> Я ничего не сказал и направился к рабочей зоне.
+|en I said nothing and headed for the work area.
+creditor1@right: Далеко не уходи, №524.
+|en Do not go far, No. 524.
+> Я сделал вид, что не услышал.
+|en I pretended not to hear.
+@goto ch1_scene_09
+
+# CH1_SCENE_09 — Рабочее место
+@scene ch1_scene_09
+> Я занял своё место возле оборудования.
+|en I took my place by the equipment.
+> Работа на плавильне не требовала особой фантазии. Следи за показателями, проверяй подачу материала, вовремя меняй изношенные элементы и не пытайся сделать больше, чем положено.
+|en Work at the smelter did not demand much imagination. Watch the readings, check the material feed, replace worn parts on time and do not try to do more than you are supposed to.
+> Хотя последнее правило я нарушал регулярно.
+|en Though I broke that last rule regularly.
+> На панели мигнуло предупреждение.
+|en A warning flashed on the panel.
+> ОШИБКА: НЕСТАБИЛЬНАЯ ПОДАЧА.
+|en ERROR: UNSTABLE FEED.
+> Я посмотрел на показания.
+|en I looked at the readings.
+charlie@left: Только не сегодня...
+|en Not today...
+> Рядом лежал контейнер с деталями, предназначенными для обслуживания оборудования. В нём находились старые соединители, несколько металлических пластин и моток изоляционного материала. Обычный расходный хлам.
+|en Beside it lay a container of parts meant for servicing the equipment. It held old connectors, several metal plates and a roll of insulating material. Ordinary consumable junk.
+> Но проблема была не в самом оборудовании. Судя по показателям, нарушился контакт в одном из соединений.
+|en But the problem was not the equipment itself. Judging by the readings, the contact in one of the connections had broken.
+> Я мог вызвать техническую службу. Правда, тогда пришлось бы ждать специалиста, а простой оборудования записали бы на смену. Можно было попробовать разобраться самостоятельно.
+|en I could call the technical service. Though then I would have to wait for a specialist, and the equipment's downtime would be logged against my shift. I could also try to sort it out myself.
+@goto ch1_scene_10
+
+# CH1_SCENE_10 — Первая сборка.
+# Материалы (металлическая пластина, соединительный провод, старый контактный элемент) расходные
+# и не вынесены в предметы: вариант A описывает сборку текстом и выдаёт готовый модуль.
+@scene ch1_scene_10
+> Я снял защитную крышку панели. Внутри находилось несколько соединений. Одно из них выглядело заметно хуже остальных.
+|en I took off the panel's protective cover. Inside were several connections. One of them looked noticeably worse than the rest.
+worker@right: Что там?
+|en What is it?
+charlie@left: Похоже, контакт отошёл.
+|en Looks like a contact came loose.
+worker: Вызови техников.
+|en Call the technicians.
+charlie: Они будут идти полсмены.
+|en They will take half a shift to get here.
+worker: Ну, это уже не моя проблема.
+|en Well, that is not my problem.
+> Я достал инструменты.
+|en I took out my tools.
+@choice
+* Попробовать устранить неисправность самостоятельно. -> ch1_choice_05_a
+|en Try to fix the fault myself.
+* Вызвать техническую службу. -> ch1_choice_05_b
+|en Call the technical service.
+
+@scene ch1_choice_05_a
+@set CH1_REPAIRED_MACHINE
+@give contact_module
+> Я проверил соединение и подготовил необходимые детали.
+|en I checked the connection and prepared the necessary parts.
+> Старый контактный элемент уже не годился, но его можно было заменить запасным. Я подобрал подходящую пластину и закрепил провод.
+|en The old contact element was no longer any good, but it could be replaced with a spare. I picked a suitable plate and fastened the wire.
+> Оборудование вернулось к нормальной работе. Получен предмет: Собранный контактный модуль.
+|en The equipment returned to normal operation. Item received: Assembled contact module.
+@goto ch1_scene_11
+
+@scene ch1_choice_05_b
+@set CH1_CALLED_TECHNICIANS
+> Я закрыл панель и вызвал специалиста. Через некоторое время подошёл сотрудник обслуживающей компании. Он быстро проверил соединение и заменил повреждённый элемент.
+|en I closed the panel and called a specialist. After a while an employee of the service company came over. He quickly checked the connection and replaced the damaged part.
+technician@right: В следующий раз не пытайтесь ремонтировать оборудование самостоятельно.
+|en Next time, do not try to repair the equipment yourself.
+charlie@left: Я и не пытался.
+|en I was not trying to.
+> Он посмотрел на инструменты в моих руках.
+|en He looked at the tools in my hands.
+technician: Конечно.
+|en Of course.
+@goto ch1_scene_11
+
+# CH1_SCENE_11 — Контейнер с ломом
+@scene ch1_scene_11
+> После устранения неисправности я вернулся к рабочему месту. На соседнем участке несколько сотрудников занимались сортировкой металлического лома. Один из контейнеров стоял отдельно от остальных.
+|en After the fault was cleared I returned to my workstation. On the neighboring section several employees were sorting scrap metal. One of the containers stood apart from the others.
+> На его боковой панели мигала маркировка: СПИСАНО. ПОДЛЕЖИТ УНИЧТОЖЕНИЮ.
+|en Its side panel flashed a marking: WRITTEN OFF. TO BE DESTROYED.
+charlie@left: Что там?
+|en What is in there?
+worker@right: Старый хлам. Привезли сегодня утром.
+|en Old junk. Brought in this morning.
+charlie: Почему отдельно?
+|en Why is it separate?
+worker: Не знаю. Сказали не трогать и отправить на утилизацию.
+|en Dunno. They said not to touch it and send it for disposal.
+> Я посмотрел на контейнер. На полу рядом с ним виднелась тёмная маслянистая полоса. Она тянулась от колёсной платформы к самому контейнеру.
+|en I looked at the container. A dark oily streak showed on the floor beside it. It ran from the wheeled platform to the container itself.
+charlie: Протекло что-то?
+|en Did something leak?
+worker: Наверное. Не моя смена, не моя проблема.
+|en Probably. Not my shift, not my problem.
+> Я присел и осмотрел след. Масло выглядело свежим.
+|en I crouched and examined the trail. The oil looked fresh.
+charlie: А что внутри?
+|en And what is inside?
+worker: Какая разница? Если написано «уничтожить», значит, уничтожить.
+|en What difference does it make? If it says "destroy," then destroy.
+> Рабочий пожал плечами и вернулся к своим делам. Я поднялся.
+|en The worker shrugged and went back to his own business. I stood up.
+> Что-то в этом контейнере меня насторожило. Не сама маркировка. Скорее то, как тщательно его отделили от остального груза.
+|en Something about that container put me on guard. Not the marking itself. Rather, how carefully it had been separated from the rest of the load.
+> На боковой панели была ещё одна наклейка. Часть текста стёрлась, но несколько символов сохранились: ...513
+|en There was another sticker on the side panel. Part of the text had worn away, but a few characters remained: ...513
+> Я нахмурился.
+|en I frowned.
+charlie: ЭЛЛИС, ты можешь определить, что это за маркировка?
+|en ELLIS, can you determine what this marking is?
+> Я тихо произнёс это, проверяя связь через КПК.
+|en I said it quietly, checking the link through my PDA.
+ellis@right: Для определения необходим доступ к дополнительным данным.
+|en Identification requires access to additional data.
+charlie: Значит, не можешь.
+|en So you cannot.
+ellis: Подтверждаю.
+|en Confirmed.
+> Я убрал КПК. Из контейнера донёсся едва различимый металлический звук. Я замер.
+|en I put the PDA away. A barely audible metallic sound came from the container. I froze.
+> Через секунду звук повторился.
+|en A second later the sound repeated.
+worker: Эй! Ты там долго собираешься стоять?
+|en Hey! Are you going to stand there all day?
+charlie: Уже ухожу.
+|en Leaving already.
+> Я отступил от контейнера.
+|en I stepped back from the container.
+@set CH1_FOUND_CONTAINER
+@set CH1_SAW_OIL_TRAIL
+@goto ch1_scene_12
+
+# CH1_SCENE_12 — Конец смены.
+# Правка автора для проверки: в источнике «снова увидел контейнер. Его уже не было» противоречит себе.
+@scene ch1_scene_12
+> Рабочий день тянулся дольше обычного. После утренней встречи с сыновьями кредитора мне не хотелось лишний раз попадаться им на глаза. Я старался заниматься делом и не обращать внимания на постоянный шум оборудования.
+|en The workday dragged on longer than usual. After the morning meeting with the creditor's sons, I did not want to cross their path more than necessary. I tried to keep to my work and ignore the constant noise of the machinery.
+> В какой-то момент я снова посмотрел на КПК. Никаких новых сообщений от Сэма.
+|en At some point I looked at my PDA again. No new messages from Sam.
+> Я открыл рабочее расписание. До конца смены оставалось совсем немного.
+|en I opened the work schedule. There was very little left until the end of the shift.
+> Когда прозвучал сигнал окончания работы, я собрал инструменты и направился к выходу.
+|en When the end-of-shift signal sounded, I gathered my tools and headed for the exit.
+> По дороге я прошёл мимо того места, где стоял контейнер. Его уже не было.
+|en On the way I passed the spot where the container had stood. It was gone.
+> На полу осталась только маслянистая полоса. Теперь она тянулась дальше, за пределы рабочей зоны, к служебному коридору.
+|en Only the oily streak remained on the floor. Now it ran farther, out of the work area, toward the service corridor.
+> Я остановился.
+|en I stopped.
+charlie@left: Это ещё что такое?
+|en What on earth is that?
+guard@right: №524. Выход через главный пункт.
+|en No. 524. Exit through the main checkpoint.
+> Я обернулся. Сотрудник охраны смотрел на меня с нескрываемым недовольством.
+|en I turned. A security guard was watching me with undisguised displeasure.
+charlie: Я уже ухожу.
+|en I am already leaving.
+guard: Тогда не задерживайтесь.
+|en Then do not linger.
+> Я посмотрел на коридор ещё раз и направился к выходу. Но мысль о контейнере не отпускала.
+|en I looked at the corridor once more and headed for the exit. But the thought of the container would not let go.
+@set CH1_SHIFT_COMPLETED
+@goto ch1_scene_13
+
+# CH1_SCENE_13 — Возвращение
+@scene ch1_scene_13
+@location building_entrance Дом Чарли. Подъезд
+|en Charlie's building. Entrance
+> На улице уже почти не было утренней суеты. Я шёл домой и думал о прошедшем дне.
+|en The morning bustle was almost gone from the street. I walked home thinking about the day.
+> Отравление. Странный контейнер. Маркировка, которую ЭЛЛИС не смог определить. Сыновья кредитора, которым зачем-то понадобился мой КПК.
+|en The poisoning. A strange container. A marking ELLIS could not identify. The creditor's sons, who for some reason needed my PDA.
+> Слишком много совпадений для одного утра.
+|en Too many coincidences for one morning.
+> Я достал устройство и открыл список уведомлений. Одно сообщение от Сэма:
+|en I took out the device and opened the notification list. One message from Sam:
+> СЭМ: «Ты добрался до работы?»
+|en SAM: "Did you make it to work?"
+> Я ответил:
+|en I replied:
+> ЧАРЛИ: «К сожалению, да».
+|en CHARLIE: "Unfortunately, yes."
+> Ответ пришёл почти сразу.
+|en The answer came almost at once.
+> СЭМ: «Тогда постарайся сегодня больше ничего не сломать».
+|en SAM: "Then try not to break anything else today."
+> Я убрал КПК. Впереди показался дом.
+|en I put the PDA away. My building came into view ahead.
+> Когда я подошёл к подъезду, заметил на полу возле стены небольшую тёмную каплю. Потом ещё одну. Масло.
+|en As I approached the entrance, I noticed a small dark drop on the floor by the wall. Then another. Oil.
+> Я остановился и посмотрел вдоль стены. След уходил в сторону старого технического прохода, которым почти никто не пользовался.
+|en I stopped and looked along the wall. The trail led toward an old service passage that almost nobody used.
+> Я вспомнил контейнер на заводе. Совпадение? Возможно. Но проверить стоило.
+|en I remembered the container at the factory. A coincidence? Possibly. But it was worth checking.
+@goto ch1_scene_14
+
+# CH1_SCENE_14 — След
+@scene ch1_scene_14
+@location tech_corridor Подъезд. Технический коридор
+|en Entrance. Service corridor
+> Я медленно пошёл вдоль стены. Маслянистые следы появлялись нерегулярно. Иногда их было почти не видно, иногда они становились заметнее.
+|en I walked slowly along the wall. The oily marks appeared irregularly. Sometimes they were almost invisible, sometimes more noticeable.
+> В конце коридора находилась старая дверь технического помещения. Я остановился возле неё.
+|en At the end of the corridor was the old door of a service room. I stopped beside it.
+> На поверхности виднелись царапины и следы давнего ремонта. Замок выглядел старым, но целым. Я присел и посмотрел на пол. След обрывался прямо возле двери.
+|en Scratches and traces of old repairs showed on its surface. The lock looked old but intact. I crouched and looked at the floor. The trail ended right at the door.
+charlie@left: ЭЛЛИС, ты можешь проверить техническое помещение?
+|en ELLIS, can you check the service room?
+ellis@right: Уточните объект проверки.
+|en Specify the object of inspection.
+charlie: Дверь возле моего подъезда. Старое техническое помещение.
+|en The door near my entrance. The old service room.
+ellis: Доступ к системе помещения отсутствует.
+|en There is no access to the room's system.
+charlie: Прекрасно.
+|en Wonderful.
+> Я попробовал осмотреть замок. Он не выглядел повреждённым, но на металлической поверхности были заметны свежие следы контакта. Кто-то недавно открывал эту дверь.
+|en I tried examining the lock. It did not look damaged, but there were fresh contact marks on the metal surface. Someone had opened this door recently.
+@choice
+* Осмотреть дверь внимательнее. -> ch1_choice_06_a
+|en Examine the door more closely.
+* Попробовать открыть дверь. -> ch1_choice_06_b
+|en Try to open the door.
+* Не задерживаться и вернуться домой. -> ch1_choice_06_c
+|en Do not linger and go home.
+
+@scene ch1_choice_06_a
+@set CH1_FOUND_TECH_MARK
+> Я провёл пальцами по краю металлической панели. Под слоем пыли обнаружилась небольшая маркировка. Она почти стёрлась, но отдельные буквы ещё можно было разобрать.
+|en I ran my fingers along the edge of the metal panel. Under a layer of dust I found a small marking. It had almost worn away, but some letters could still be made out.
+@goto ch1_scene_15
+
+@scene ch1_choice_06_b
+@set CH1_TRIED_TECH_DOOR
+> Я потянул за ручку. Дверь не поддалась. Замок был закрыт. Я попробовал ещё раз, но безрезультатно.
+|en I pulled the handle. The door did not give. The lock was shut. I tried again, without result.
+charlie@left: Отлично. Ещё одна дверь, которая меня не любит.
+|en Great. Another door that does not like me.
+@goto ch1_scene_15
+
+@scene ch1_choice_06_c
+@set CH1_IGNORED_TECH_DOOR
+> Я решил не лезть туда, куда меня никто не приглашал. След мог оказаться обычной утечкой. А если нет — разберусь позже.
+|en I decided not to meddle where nobody had invited me. The trail could be an ordinary leak. And if not, I would sort it out later.
+@goto ch1_scene_15
+
+# CH1_SCENE_15 — Старый кабинет.
+# Если игрок не осматривал ЭЛЛИС в сцене 04, архив отца в этой сцене упоминается впервые (ветка ch1_scene_15 без CH1_KNOWS_FAMILY_ARCHIVE).
+@scene ch1_scene_15
+@location apartment
+> Я вернулся в квартиру. ЭЛЛИС находился в комнате и, судя по его положению, продолжал выполнять обычный цикл наблюдения.
+|en I returned to the apartment. ELLIS was in the room and, judging by his position, was continuing his usual observation cycle.
+ellis@right: Хо-зя-ин. Вы вернулись.
+|en Mas-ter. You have returned.
+charlie@left: Как видишь.
+|en As you see.
+ellis: Ваше состояние требует отдыха.
+|en Your condition requires rest.
+charlie: Моё состояние требует выходных.
+|en My condition requires days off.
+> Я снял верхнюю одежду и положил КПК на стол. Вспомнились слова Сэма. Потом контейнер, маркировка и масляный след возле дома. И ещё документы отца.
+|en I took off my outer clothes and put the PDA on the table. Sam's words came to mind. Then the container, the marking and the oil trail near the building. And my father's documents.
+> Я посмотрел на ЭЛЛИС.
+|en I looked at ELLIS.
+@if CH1_KNOWS_FAMILY_ARCHIVE -> ch1_15_archive_known
+charlie: ЭЛЛИС, у тебя ведь хранятся семейные архивы?
+|en ELLIS, you keep the family archives, do you not?
+ellis: Подтверждаю. В архиве имеются данные семьи Эфкиндз, включая документы, связанные с Реинодом Эфкиндзом.
+|en Confirmed. The archive holds data on the Efkindz family, including documents connected to Reinod Efkindz.
+charlie: Документы отца?
+|en My father's documents?
+ellis: Подтверждаю.
+|en Confirmed.
+@set CH1_KNOWS_FAMILY_ARCHIVE
+@goto ch1_15_archive_ask
+
+@scene ch1_15_archive_known
+charlie@left: Ты говорил, что у тебя есть архив отца.
+|en You said you have my father's archive.
+ellis@right: Подтверждаю.
+|en Confirmed.
+@goto ch1_15_archive_ask
+
+@scene ch1_15_archive_ask
+charlie@left: Там есть что-нибудь о старой мастерской?
+|en Is there anything in it about the old workshop?
+ellis@right: В архиве имеются документы, связанные с деятельностью Реинода Эфкиндза. Для просмотра требуется отдельный запрос.
+|en The archive holds documents connected to the activity of Reinod Efkindz. A separate query is required for viewing.
+charlie: Покажи, что можешь.
+|en Show what you can.
+> Робот некоторое время обрабатывал запрос.
+|en The robot processed the request for a while.
+ellis: Обнаружены архивные записи. Часть файлов повреждена или недоступна.
+|en Archive records found. Some files are damaged or unavailable.
+charlie: Можешь восстановить?
+|en Can you recover them?
+ellis: Для восстановления необходим дополнительный анализ.
+|en Recovery requires additional analysis.
+> Я вздохнул.
+|en I sighed.
+charlie: Конечно.
+|en Of course.
+> ЭЛЛИС повернул оптический модуль в сторону коридора.
+|en ELLIS turned his optical module toward the corridor.
+ellis: Также обнаружено несоответствие в данных домашней системы.
+|en A discrepancy was also detected in the home system's data.
+charlie: Какое ещё несоответствие?
+|en What discrepancy now?
+ellis: Система зафиксировала кратковременное изменение энергопотребления в области старого технического помещения.
+|en The system recorded a brief change in power consumption in the area of the old service room.
+> Я посмотрел на робота.
+|en I looked at the robot.
+charlie: Когда?
+|en When?
+ellis: В период вашего отсутствия.
+|en During your absence.
+> Я медленно поднялся.
+|en I rose slowly.
+charlie: И почему ты не сообщил раньше?
+|en And why did you not report it earlier?
+ellis: Вы не запрашивали соответствующую информацию.
+|en You did not request the relevant information.
+charlie: Иногда мне кажется, что ты делаешь это специально.
+|en Sometimes I think you do this on purpose.
+ellis: У меня отсутствует подтверждение данной гипотезы.
+|en I have no confirmation of this hypothesis.
+> Я взял КПК. На экране появилось уведомление о новом системном событии.
+|en I picked up the PDA. A notification about a new system event appeared on the screen.
+> ОБНАРУЖЕН НЕИЗВЕСТНЫЙ ИСТОЧНИК СИГНАЛА.
+|en UNKNOWN SIGNAL SOURCE DETECTED.
+> Я посмотрел на дверь квартиры.
+|en I looked at the apartment door.
+charlie: ЭЛЛИС, ты можешь определить источник?
+|en ELLIS, can you determine the source?
+ellis: Нет. Сигнал нестабилен.
+|en No. The signal is unstable.
+> В квартире стало тихо. А потом из-за входной двери донёсся звук. Три коротких удара.
+|en The apartment fell silent. Then a sound came from behind the front door. Three short knocks.
+> Я замер. Ещё три.
+|en I froze. Three more.
+ellis: Хо-зя-ин. Обнаружено движение за входной дверью.
+|en Mas-ter. Movement detected behind the front door.
+> Я посмотрел на Сэма — точнее, на пустое место, где он сидел утром. Он уже ушёл.
+|en I looked at Sam, or rather at the empty spot where he had sat in the morning. He was already gone.
+charlie: Кто там?
+|en Who is there?
+> Ответа не последовало. Вместо этого послышался ещё один звук. Металлический скрежет.
+|en There was no answer. Instead, another sound came. A metallic scrape.
+> Я медленно подошёл к двери.
+|en I slowly walked up to the door.
+@choice
+* Посмотреть в глазок. -> ch1_choice_07_a
+|en Look through the peephole.
+* Попросить ЭЛЛИС проверить камеру. -> ch1_choice_07_b
+|en Ask ELLIS to check the camera.
+* Не открывать дверь. -> ch1_choice_07_c
+|en Do not open the door.
+
+@scene ch1_choice_07_a
+@set CH1_CHECKED_PEEPHOLE
+> Я осторожно приблизился к двери и посмотрел наружу. Коридор был пуст. Но на полу виднелась тёмная маслянистая полоса.
+|en I carefully approached the door and looked outside. The corridor was empty. But a dark oily streak showed on the floor.
+@goto ch1_scene_16
+
+@scene ch1_choice_07_b
+@set CH1_REQUESTED_CAMERA
+charlie@left: ЭЛЛИС, покажи изображение с камеры подъезда.
+|en ELLIS, show me the image from the entrance camera.
+ellis@right: Подключение отсутствует.
+|en No connection.
+charlie: Почему?
+|en Why?
+ellis: Причина неизвестна.
+|en The cause is unknown.
+@goto ch1_scene_16
+
+@scene ch1_choice_07_c
+@set CH1_LOCKED_DOOR
+> Я отступил на шаг.
+|en I stepped back.
+charlie@left: ЭЛЛИС, заблокируй входную дверь.
+|en ELLIS, lock the front door.
+ellis@right: Подтверждаю. Замок переведён в режим блокировки.
+|en Confirmed. The lock has been switched to lockdown mode.
+@goto ch1_scene_16
+
+# CH1_SCENE_16 — Завершение главы
+@scene ch1_scene_16
+> За дверью снова послышался скрежет. На этот раз громче.
+|en The scraping came again from behind the door. Louder this time.
+> ЭЛЛИС подъехал ко мне.
+|en ELLIS rolled up to me.
+ellis@right: Хо-зя-ин. Рекомендую не открывать дверь.
+|en Mas-ter. I recommend not opening the door.
+charlie@left: Я и не собирался.
+|en I was not going to.
+ellis: Зафиксировано повторное движение неизвестного объекта.
+|en Repeated movement of an unknown object recorded.
+> Я посмотрел на экран КПК. Сигнал продолжал появляться и исчезать. Его источник находился совсем рядом. Почти за дверью.
+|en I looked at the PDA screen. The signal kept appearing and vanishing. Its source was very close. Almost behind the door.
+charlie: ЭЛЛИС, это тот же сигнал, что был раньше?
+|en ELLIS, is this the same signal as before?
+ellis: Подтверждаю.
+|en Confirmed.
+> Я почувствовал, как напряжение возвращается.
+|en I felt the tension return.
+> Всё утро я пытался убедить себя, что произошедшее на заводе не имеет ко мне отношения. Что контейнер был обычной партией лома. Что масляные следы возле дома — случайность.
+|en All morning I had tried to convince myself that what happened at the factory had nothing to do with me. That the container was an ordinary batch of scrap. That the oil trails near the building were an accident.
+> Но теперь всё это находилось здесь. За моей дверью.
+|en But now all of it was here. Behind my door.
+> Я сделал шаг назад. Из-за двери раздался ещё один удар. Затем тишина.
+|en I took a step back. Another blow came from behind the door. Then silence.
+> На экране КПК появилось новое сообщение.
+|en A new message appeared on the PDA screen.
+> НЕИЗВЕСТНЫЙ ОБЪЕКТ. ИДЕНТИФИКАЦИЯ НЕВОЗМОЖНА. СИГНАЛ ПОТЕРЯН.
+|en UNKNOWN OBJECT. IDENTIFICATION IMPOSSIBLE. SIGNAL LOST.
+> Я посмотрел на ЭЛЛИС.
+|en I looked at ELLIS.
+charlie: Что это было?
+|en What was that?
+> Робот не ответил сразу.
+|en The robot did not answer at once.
+ellis: Данные отсутствуют.
+|en No data.
+> Я перевёл взгляд на входную дверь. На этот раз мне совсем не хотелось проверять, кто находится по ту сторону.
+|en I turned my gaze to the front door. This time I had no desire at all to check who was on the other side.
+> КОНЕЦ ГЛАВЫ 1.
+|en END OF CHAPTER 1.
+@end

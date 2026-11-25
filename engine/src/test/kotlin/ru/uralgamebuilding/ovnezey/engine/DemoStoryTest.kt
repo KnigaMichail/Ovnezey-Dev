@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 /** Проходит встроенную заглушку целиком: выбор, осмотр, предметы, реакции, конец. */
 class DemoStoryTest {
     private fun loadDemo(): Story? {
-        val file = listOf("../app/src/main/assets/story/demo.ovn", "app/src/main/assets/story/demo.ovn")
+        val file = listOf("src/test/resources/demo.ovn", "engine/src/test/resources/demo.ovn")
             .map { File(it) }.firstOrNull { it.isFile }
         org.junit.Assume.assumeTrue("demo.ovn не найден относительно рабочей папки", file != null)
         return file?.let { ScriptParser.parse(it.readText(Charsets.UTF_8)) }

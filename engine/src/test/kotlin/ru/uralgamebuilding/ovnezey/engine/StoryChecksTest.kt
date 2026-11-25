@@ -56,7 +56,7 @@ class StoryChecksTest {
 
     @Test
     fun bundledDemoStoryIsValidAndFullyTranslated() {
-        val file = listOf("../app/src/main/assets/story/demo.ovn", "app/src/main/assets/story/demo.ovn")
+        val file = listOf("src/test/resources/demo.ovn", "engine/src/test/resources/demo.ovn")
             .map { File(it) }.firstOrNull { it.isFile }
         org.junit.Assume.assumeTrue("demo.ovn не найден относительно рабочей папки", file != null)
         val story = ScriptParser.parse(file!!.readText(Charsets.UTF_8))
