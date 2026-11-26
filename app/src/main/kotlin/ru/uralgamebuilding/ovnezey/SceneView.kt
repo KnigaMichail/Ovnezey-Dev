@@ -96,8 +96,9 @@ class SceneView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             if (pressed || debug || bitmap == null) {
                 linePaint.color = if (pressed) PixelUi.ACCENT else DEBUG_LINE
                 canvas.drawRect(rect, linePaint)
-                drawLabel(canvas, spot.label, rect, if (pressed) PixelUi.ACCENT else DEBUG_LINE, m.textPx)
             }
+            // Названия областей видны всегда: на готовой картинке иначе не понять, что можно нажать.
+            drawLabel(canvas, spot.label, rect, if (pressed) PixelUi.ACCENT else DEBUG_LINE, m.textPx)
         }
     }
 

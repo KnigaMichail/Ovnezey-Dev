@@ -1,14 +1,17 @@
 package ru.uralgamebuilding.ovnezey
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import ru.uralgamebuilding.ovnezey.engine.MinigameKind
 import ru.uralgamebuilding.ovnezey.engine.ShowKind
+import ru.uralgamebuilding.ovnezey.engine.TapMeter
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -36,7 +39,9 @@ class EffectView @JvmOverloads constructor(context: Context) : View(context) {
     private var seconds = 0
     private var easy = false
 
-    private var progress = 0f
+    private var meter = TapMeter(1, 0f)
+    private var shownOpen = 0f
+    private var revealImage: Bitmap? = null
     private var lastMs = 0L
     private var taps = 0
     private var tapMs = 0L
@@ -58,6 +63,7 @@ class EffectView @JvmOverloads constructor(context: Context) : View(context) {
     private val neons = ArrayList<Neon>()
 
     private val paint = Paint().apply { isAntiAlias = false }
+    private val bitmapPaint = Paint().apply { isAntiAlias = false; isFilterBitmap = false }
     private val textPaint = Paint().apply { isAntiAlias = false }
     private var unit = 1
     private var ox = 0
@@ -77,14 +83,16 @@ class EffectView @JvmOverloads constructor(context: Context) : View(context) {
         finished = true
     }
 
-    fun startMinigame(kind: MinigameKind, count: Int, seconds: Int, label: String, easyMode: Boolean) {
+    /** [reveal] картинка следующей локации: «Очнуться» раскрывает её горизонтальной щелью из чёрного экрана. */
+    fun startMinigame(kind: MinigameKind, count: Int, seconds: Int, label: String, easyMode: Boolean, reveal: Bitmap? = null) {
         reset()
         this.label = label
         this.easy = easyMode
         this.count = if (easyMode && kind != MinigameKind.WIRES && kind != MinigameKind.BADGE) max(2, (count * 0.7f).toInt()) else count
         this.seconds = if (easyMode) (seconds * 1.5f).toInt() else seconds
+        revealImage = reveal
         mode = when (kind) {
-            MinigameKind.WAKE -> Mode.WAKE
+            MinigameKind.WAKE -> Mode.WAKE.also { meter = TapMeter(this.count, if (easyMode) 0.07f else 0.12f) }
             MinigameKind.BADGE -> Mode.BADGE
             MinigameKind.CRATE -> Mode.CRATE
             MinigameKind.FIGHT -> Mode.FIGHT
@@ -101,7 +109,7 @@ class EffectView @JvmOverloads constructor(context: Context) : View(context) {
     }
 
     private fun reset() {
-        progress = 0f; taps = 0; tapMs = 0L; doneMs = 0L; shake = 0f; failed = false
+        shownOpen = 0f; taps = 0; tapMs = 0L; doneMs = 0L; shake = 0f; failed = false
         dragWire = -1; wires = emptyList(); finished = false
     }
 
@@ -199,42 +207,35 @@ class EffectView @JvmOverloads constructor(context: Context) : View(context) {
         post { onFinished?.invoke(success) }
     }
 
-    // ---- Проснуться
+    // ---- Проснуться: горизонтальная щель из центра чёрного экрана раскрывает следующую сцену
     private fun drawWake(t: Long, dt: Float) {
-        if (doneMs == 0L) {
-            progress = max(0f, progress - dt * (if (easy) 0.07f else 0.12f))
-        }
-        val open = progress
-        val c1 = Color.rgb((10 + 60 * open).toInt(), (12 + 70 * open).toInt(), (20 + 90 * open).toInt())
-        box(0f, 0f, 320f, 180f, c1)
-        val half = open * 32f
-        if (half >= 1f) {
-            var dy = -half
-            while (dy < half) {
-                val k = sqrt(max(0f, 1f - (dy / half) * (dy / half)))
-                val w = 120f * k
-                box(160f - w / 2, 88f + dy, w, 2f, 0xFFDCE6F0.toInt())
-                val r = 15f * min(1f, open * 1.6f)
-                if (abs(dy) < r) {
-                    val iw = 2f * sqrt(max(0f, r * r - dy * dy))
-                    box(160f - iw / 2, 88f + dy, iw, 2f, 0xFF304868.toInt())
-                    if (abs(dy) < r * 0.5f) {
-                        val pw = iw * 0.45f
-                        box(160f - pw / 2, 88f + dy, pw, 2f, Color.BLACK)
-                    }
-                }
-                dy += 2f
+        val c = canvasRef ?: return
+        meter.update(dt)
+        val target = if (meter.completed) 1f else meter.progress
+        shownOpen += (target - shownOpen) * min(1f, dt * (if (meter.completed) 6f else 14f))
+        if (meter.completed && shownOpen > 0.995f) shownOpen = 1f
+        val half = 90f * shownOpen
+        if (half >= 0.5f) {
+            c.save()
+            c.clipRect(fx(0f), fy(90f - half), fx(320f), fy(90f + half))
+            val bmp = revealImage
+            if (bmp != null) {
+                c.drawBitmap(bmp, null, Rect(fx(0f).toInt(), fy(0f).toInt(), fx(320f).toInt(), fy(180f).toInt()), bitmapPaint)
+            } else {
+                box(0f, 0f, 320f, 180f, 0xFF1C1C2C.toInt())
             }
+            // Засвет: пока щель узкая, свет почти белый, потом картинка проявляется.
+            box(0f, 0f, 320f, 180f, Color.argb(((1f - shownOpen) * 0.75f * 255).toInt(), 255, 255, 255))
+            c.restore()
+            box(0f, 90f - half - 1f, 320f, 1f, 0xFFE8F0FF.toInt())
+            box(0f, 90f + half, 320f, 1f, 0xFFE8F0FF.toInt())
         }
-        val blink = if ((t / 450) % 2 == 0L) 255 else 120
-        text(label, 150f, 1, PixelUi.ACCENT, blink)
-        box(80f, 168f, 160f, 4f, 0xFF202030.toInt())
-        box(80f, 168f, 160f * open, 4f, PixelUi.ACCENT)
-        if (open >= 1f && doneMs == 0L) doneMs = SystemClock.uptimeMillis()
-        if (doneMs != 0L) {
-            val k = ((SystemClock.uptimeMillis() - doneMs) / 450f).coerceIn(0f, 1f)
-            box(0f, 0f, 320f, 180f, Color.argb((255 * k).toInt(), 255, 255, 255))
-            if (k >= 1f) end(true)
+        if (!meter.completed) {
+            box(88f, 160f, 144f, 14f, Color.argb(170, 0, 0, 0))
+            text(label, 167f, 1, PixelUi.ACCENT, if ((t / 450) % 2 == 0L) 255 else 120)
+        } else if (shownOpen >= 1f) {
+            if (doneMs == 0L) doneMs = SystemClock.uptimeMillis()
+            if (SystemClock.uptimeMillis() - doneMs > 350) end(true)
         }
     }
 
@@ -462,7 +463,7 @@ class EffectView @JvmOverloads constructor(context: Context) : View(context) {
             Mode.WIRES -> handleWireTouch(event)
             else -> if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 when (mode) {
-                    Mode.WAKE -> if (doneMs == 0L) progress = min(1f, progress + 1f / count)
+                    Mode.WAKE -> meter.tap()
                     Mode.BADGE -> if (tapMs == 0L) tapMs = now
                     Mode.CRATE -> if (doneMs == 0L) {
                         taps++; shake = 1f

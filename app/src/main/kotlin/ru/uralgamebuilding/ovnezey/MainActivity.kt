@@ -12,6 +12,8 @@ import android.widget.TextView
 import android.widget.Toast
 import ru.uralgamebuilding.ovnezey.engine.GameState
 import ru.uralgamebuilding.ovnezey.engine.LoadResult
+import ru.uralgamebuilding.ovnezey.engine.MinigameKind
+import android.graphics.Bitmap
 import ru.uralgamebuilding.ovnezey.engine.RejectReason
 import ru.uralgamebuilding.ovnezey.engine.SaveSlots
 import ru.uralgamebuilding.ovnezey.engine.Side
@@ -183,7 +185,7 @@ class MainActivity : BaseActivity() {
             is Step.Say -> showSay(step)
             is Step.Choose -> showChoices(step)
             is Step.Explore -> showExplore(step)
-            is Step.Minigame -> showEffect { it.startMinigame(step.kind, step.count, step.seconds, step.label, services.settings.easyMinigames) }
+            is Step.Minigame -> showEffect { it.startMinigame(step.kind, step.count, step.seconds, step.label, services.settings.easyMinigames, if (step.kind == MinigameKind.WAKE) revealImage() else null) }
             is Step.Show -> showEffect { it.startShow(step.kind, step.text) }
             Step.End -> showEnd()
         }
@@ -194,6 +196,20 @@ class MainActivity : BaseActivity() {
             portraitRight.visibility = View.INVISIBLE
             backpackButton.visibility = View.GONE
         }
+    }
+
+    /** Картинка локации, в которую приведёт успех мини-игры «Очнуться»: проверяется на копии состояния. */
+    private fun revealImage(): Bitmap? {
+        val story = services.story ?: return null
+        val state = runner?.state ?: return null
+        val location = try {
+            StoryRunner(story, state).apply { finishMinigame(true) }.state.location
+        } catch (e: IllegalStateException) {
+            null
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+        return location?.let { AssetImages.location(this, it) }
     }
 
     /** Показывает полноэкранный эффект и запускает его один раз для текущей позиции сюжета. */

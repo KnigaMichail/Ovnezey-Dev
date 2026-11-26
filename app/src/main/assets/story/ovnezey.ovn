@@ -51,8 +51,8 @@ desc: Номер ящика с лома. Взял из любопытства.
 @goto stairs_body
 
 @scene stairs_body
-@location ark_stairs Ковчег. Площадка у гермодвери
-|en The Ark. Landing by the airtight door
+@location ark_stairs Ковчег. Лестница
+|en The Ark. Stairwell
 > Еле стоя на ногах, я плёлся по бесконечным узким ступенькам. Иногда оступался и чуть ли не лицом впечатывался в них.
 |en Barely able to stand, I dragged myself up the endless narrow steps. Now and then I stumbled and nearly smashed my face into them.
 > Грузные портфель и винтовка тянули вниз, пистолет выпал из порванной кобуры ещё где-то далеко внизу.
@@ -67,6 +67,8 @@ desc: Номер ящика с лома. Взял из любопытства.
 |en I was losing consciousness as I walked, starting to see things that did not really exist. A railing blocking my way, for example, or lonely foggy silhouettes...
 > Вскоре я запнулся ногой о подступенок, окончательно потеряв равновесие. Выставив стёртые руки перед собой и упав на колени, я понял, что стою на ровной поверхности.
 |en Soon I caught my foot on a riser and lost my balance for good. I threw out my raw hands, dropped to my knees, and realized I was on level ground.
+@location ark_door Ковчег. Площадка у гермодвери
+|en The Ark. Landing by the airtight door
 > Я поднял залипшие от пота и крови глаза вверх. Взору предстала небольшая толстая железная гермодверь, освещаемая голубым светом лампы в стеклянном плафоне. Лампа была вмонтирована в стену справа от самой двери.
 |en I raised my eyes, glued shut with sweat and blood. Before me stood a small, thick iron airtight door, lit by the blue glow of a lamp in a glass shade. The lamp was set into the wall to the right of the door.
 > Меня повело в сторону. Я ухватился рукой за перила, выдохнул. С огромным усилием постарался подняться.
@@ -405,19 +407,19 @@ sam: Видел. Поэтому и удивляюсь, что ты ещё спо
 |en I looked around the room. Before leaving, it was worth making sure everything at home was in place.
 @goto apt_hub
 
-# Осмотр квартиры. Координаты условные, пока нет картинки locations/apartment.png.
+# Осмотр квартиры. Координаты подогнаны под временную картинку locations/apartment.png, после финального арта перемерить.
 # Нижние ~17% экрана закрывает панель текста: области должны лежать выше, y+h не больше 0.80.
 @scene apt_hub
 @explore
-* table 0.08 0.45 0.25 0.28 Стол -> apt_table
+* table 0.71 0.55 0.22 0.25 Стол -> apt_table
 |en Table
-* ellis 0.40 0.50 0.14 0.23 ЭЛЛИС -> apt_ellis_talk
+* ellis 0.59 0.60 0.11 0.20 ЭЛЛИС -> apt_ellis_talk
 |en ELLIS
-* sam 0.58 0.25 0.16 0.48 Сэм -> apt_sam_talk
+* sam 0.39 0.46 0.19 0.34 Сэм -> apt_sam_talk
 |en Sam
-* door 0.84 0.22 0.12 0.50 Входная дверь -> apt_door
+* door 0.92 0.36 0.07 0.42 Входная дверь -> apt_door
 |en Front door
-* done 0.30 0.73 0.40 0.07 Идти на работу -> ch1_city
+* done 0.04 0.70 0.20 0.10 Идти на работу -> ch1_city
 |en Head to work
 
 @scene apt_again
