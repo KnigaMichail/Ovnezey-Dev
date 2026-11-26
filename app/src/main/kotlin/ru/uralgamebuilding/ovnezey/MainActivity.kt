@@ -16,6 +16,7 @@ import ru.uralgamebuilding.ovnezey.engine.RejectReason
 import ru.uralgamebuilding.ovnezey.engine.SaveSlots
 import ru.uralgamebuilding.ovnezey.engine.Side
 import ru.uralgamebuilding.ovnezey.engine.Step
+import android.view.ViewGroup
 import ru.uralgamebuilding.ovnezey.engine.StoryRunner
 import ru.uralgamebuilding.ovnezey.engine.UseResult
 import java.io.IOException
@@ -36,6 +37,11 @@ class MainActivity : BaseActivity() {
     private lateinit var portraitRight: ImageView
     private lateinit var menuButton: Button
     private lateinit var backpackButton: Button
+    private lateinit var textPanel: View
+    private lateinit var effect: EffectView
+
+    /** Позиция сюжета, для которой запущена мини-игра или вставка: чтобы не перезапускать их при каждой перерисовке. */
+    private var effectKey: String? = null
 
     /** Предмет, выбранный в рюкзаке для применения на область. Не сохраняется: это состояние интерфейса. */
     private var selectedItem: String? = null
@@ -50,11 +56,14 @@ class MainActivity : BaseActivity() {
         choicesView = findViewById(R.id.choices)
         portraitLeft = findViewById(R.id.portraitLeft)
         portraitRight = findViewById(R.id.portraitRight)
+        textPanel = findViewById(R.id.textPanel)
 
         PixelUi.styleText(this, speakerView, color = PixelUi.ACCENT)
         PixelUi.styleText(this, textView)
         val m = PixelUi.metrics(this)
         val root = findViewById<FrameLayout>(R.id.root)
+        effect = EffectView(this).apply { visibility = View.GONE }
+        root.addView(effect, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         menuButton = PixelUi.button(this, getString(R.string.game_menu)) { showPauseMenu() }
         root.addView(
             menuButton,
@@ -108,6 +117,9 @@ class MainActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
+        // Мини-игра по времени не должна идти в фоне: при возвращении она начнётся заново с той же позиции.
+        effect.stop()
+        effectKey = null
         autosave()
     }
 
@@ -160,12 +172,53 @@ class MainActivity : BaseActivity() {
         choicesView.removeAllViews()
         choicesView.visibility = View.GONE
         scene.setSpots(emptyList())
-        when (val step = r.step) {
+        val step = r.step
+        val effectStep = step is Step.Minigame || step is Step.Show
+        if (!effectStep) {
+            effect.stop()
+            effect.visibility = View.GONE
+            effectKey = null
+        }
+        when (step) {
             is Step.Say -> showSay(step)
             is Step.Choose -> showChoices(step)
             is Step.Explore -> showExplore(step)
+            is Step.Minigame -> showEffect { it.startMinigame(step.kind, step.count, step.seconds, step.label, services.settings.easyMinigames) }
+            is Step.Show -> showEffect { it.startShow(step.kind, step.text) }
             Step.End -> showEnd()
         }
+        // Пустая панель текста не рисуется: иначе она закрывает нижнюю часть сцены и области осмотра.
+        textPanel.visibility = if (effectStep || (speakerView.text.isEmpty() && textView.text.isEmpty())) View.GONE else View.VISIBLE
+        if (effectStep) {
+            portraitLeft.visibility = View.INVISIBLE
+            portraitRight.visibility = View.INVISIBLE
+            backpackButton.visibility = View.GONE
+        }
+    }
+
+    /** Показывает полноэкранный эффект и запускает его один раз для текущей позиции сюжета. */
+    private fun showEffect(start: (EffectView) -> Unit) {
+        val r = runner ?: return
+        speakerView.text = ""
+        textView.text = ""
+        effect.visibility = View.VISIBLE
+        val key = "${r.state.scene}#${r.state.index}"
+        if (effectKey == key && effect.isRunning) return
+        effectKey = key
+        effect.onFinished = { success ->
+            val current = runner
+            if (current != null && "${current.state.scene}#${current.state.index}" == key) {
+                val before = current.state
+                when (current.step) {
+                    is Step.Minigame -> current.finishMinigame(success)
+                    is Step.Show -> current.advance()
+                    else -> {}
+                }
+                effectKey = null
+                afterChange(before)
+            }
+        }
+        start(effect)
     }
 
     private fun showSay(step: Step.Say) {

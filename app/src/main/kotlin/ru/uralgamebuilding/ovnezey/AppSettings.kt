@@ -34,7 +34,13 @@ class AppSettings(context: Context) {
         get() = prefs.getBoolean(KEY_DEBUG_HOTSPOTS, false)
         set(value) { prefs.edit().putBoolean(KEY_DEBUG_HOTSPOTS, value).apply() }
 
+    /** Упрощённые мини-игры: меньше тапов и больше времени. */
+    var easyMinigames: Boolean
+        get() = prefs.getBoolean(KEY_EASY_MINIGAMES, false)
+        set(value) { prefs.edit().putBoolean(KEY_EASY_MINIGAMES, value).apply() }
+
     private companion object {
+        const val KEY_EASY_MINIGAMES = "easy_minigames"
         const val KEY_LANGUAGE = "language"
         const val KEY_DEBUG_HOTSPOTS = "debug_hotspots"
     }

@@ -57,7 +57,39 @@ data class FailRule(val hotspot: String, val target: String) {
     }
 }
 
-/** Команда сценария. Say, Choice, Explore и End требуют реакции игрока, остальные выполняются автоматически. */
+/** Вид мини-игры. Правила и отрисовку определяет интерфейс, движок хранит только параметры. */
+enum class MinigameKind(val code: String) {
+    /** Проснуться: быстро тапать, пока «глаза» не откроются. Провала нет. */
+    WAKE("wake"),
+
+    /** Приложить пропуск к терминалу: один тап. */
+    BADGE("badge"),
+
+    /** Вскрыть ящик: [Node.Minigame.count] тапов без ограничения по времени. */
+    CRATE("crate"),
+
+    /** Отбиться: [Node.Minigame.count] тапов за [Node.Minigame.seconds] секунд, иначе провал. */
+    FIGHT("fight"),
+
+    /** Соединить [Node.Minigame.count] пар проводов. */
+    WIRES("wires");
+
+    companion object {
+        fun fromCode(code: String): MinigameKind? = entries.firstOrNull { it.code == code }
+    }
+}
+
+/** Вид экранной вставки: анимированный город или терминал с ошибкой. */
+enum class ShowKind(val code: String) {
+    CITY("city"),
+    TERMINAL("terminal");
+
+    companion object {
+        fun fromCode(code: String): ShowKind? = entries.firstOrNull { it.code == code }
+    }
+}
+
+/** Команда сценария. Say, Show, Minigame, Choice, Explore и End требуют реакции игрока, остальные выполняются автоматически. */
 sealed interface Node {
     /** Реплика персонажа или текст рассказчика ([speaker] == null). В [speaker] хранится идентификатор или имя из сценария. */
     data class Say(
@@ -83,6 +115,30 @@ sealed interface Node {
         val uses: List<UseRule> = emptyList(),
         val fails: List<FailRule> = emptyList(),
     ) : Node
+
+    /**
+     * Мини-игра. Успех ведёт в [okTarget] или, если он не задан, к следующей команде. Провал ведёт в [failTarget];
+     * если он не задан, мини-игра начинается заново без изменения состояния.
+     */
+    data class Minigame(
+        val kind: MinigameKind,
+        val count: Int,
+        val seconds: Int,
+        val label: String,
+        val okTarget: String? = null,
+        val failTarget: String? = null,
+        val translations: Map<Language, String> = emptyMap(),
+    ) : Node
+
+    /** Экранная вставка с текстом [text] (заголовок или сообщение об ошибке). Игрок нажимает, чтобы продолжить. */
+    data class Show(
+        val kind: ShowKind,
+        val text: String,
+        val translations: Map<Language, String> = emptyMap(),
+    ) : Node
+
+    /** Сброс партии для петли: очищает флаги (кроме [keep]), параметры, рюкзак и локацию. */
+    data class Reset(val keep: Set<String>) : Node
 
     data object End : Node
 }

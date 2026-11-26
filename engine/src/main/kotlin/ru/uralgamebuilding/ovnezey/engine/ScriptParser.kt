@@ -17,6 +17,8 @@ object ScriptParser {
     private val FAIL = Regex("""^@fail\s+($ID|\*)\s*->\s*($ID)$""")
     private val IF = Regex("""^@if\s+(.+?)\s*->\s*($ID)$""")
     private val PARAM = Regex("""^@param\s+($ID)\s+(?:([+-])\s*(\d+)|=\s*(-?\d+))$""")
+    private val MINIGAME = Regex("""^@minigame\s+([a-z]+)\s+(\d+)\s+(\d+)\s+(.+?)(?:\s+->\s+($ID)(?:\s+else\s+($ID))?)?$""")
+    private val SHOW = Regex("""^@show\s+([a-z]+)\s+(.+)$""")
     private val SAY = Regex("""^([^:@>*#|]+?)(?:@(left|right))?:\s*(.+)$""")
     private val TRANSLATION = Regex("""^\|([a-z]{2})\s+(.+)$""")
     private val ITEM_FIELD = Regex("""^(name|desc|use):\s*(.*)$""")
@@ -272,6 +274,51 @@ object ScriptParser {
                             "@goto" -> scene.add(Node.Goto(id(arg, n, "сцены")))
                             "@set" -> scene.add(Node.SetFlag(id(arg, n, "флага")))
                             "@end" -> scene.add(Node.End)
+                            "@reset" -> scene.add(
+                                Node.Reset(arg.split(Regex("\\s+")).filter { it.isNotEmpty() }.map { id(it, n, "флага") }.toSet()),
+                            )
+                            "@minigame" -> {
+                                val m = MINIGAME.matchEntire(line) ?: throw StoryParseException(
+                                    "ожидается «@minigame вид число секунды Подпись» с необязательным «-> успех» и «else провал»", n,
+                                )
+                                val g = m.groupValues
+                                val kind = MinigameKind.fromCode(g[1]) ?: throw StoryParseException(
+                                    "неизвестная мини-игра «${g[1]}», допустимо: ${MinigameKind.entries.joinToString { it.code }}", n,
+                                )
+                                val count = g[2].toIntOrNull() ?: throw StoryParseException("слишком большое число", n)
+                                val seconds = g[3].toIntOrNull() ?: throw StoryParseException("слишком большое число секунд", n)
+                                val range = when (kind) {
+                                    MinigameKind.WAKE -> 3..40
+                                    MinigameKind.BADGE -> 1..1
+                                    MinigameKind.CRATE -> 2..40
+                                    MinigameKind.FIGHT -> 3..60
+                                    MinigameKind.WIRES -> 2..6
+                                }
+                                if (count !in range) throw StoryParseException("для «${kind.code}» число должно быть от ${range.first} до ${range.last}", n)
+                                if (kind == MinigameKind.FIGHT && seconds < 1) throw StoryParseException("для «fight» нужно ограничение по времени: секунд не меньше 1", n)
+                                val ok = g[5].ifEmpty { null }
+                                val fail = g[6].ifEmpty { null }
+                                scene.add(Node.Minigame(kind, count, seconds, g[4].unescape(), ok, fail))
+                                val idx = scene.lastIndex
+                                attach = { lang, tr, ln ->
+                                    val cur = scene[idx] as Node.Minigame
+                                    if (lang in cur.translations) duplicate(lang, ln)
+                                    scene[idx] = cur.copy(translations = cur.translations + (lang to tr))
+                                }
+                            }
+                            "@show" -> {
+                                val m = SHOW.matchEntire(line) ?: throw StoryParseException("ожидается «@show вид Текст»", n)
+                                val kind = ShowKind.fromCode(m.groupValues[1]) ?: throw StoryParseException(
+                                    "неизвестная вставка «${m.groupValues[1]}», допустимо: ${ShowKind.entries.joinToString { it.code }}", n,
+                                )
+                                scene.add(Node.Show(kind, m.groupValues[2].unescape()))
+                                val idx = scene.lastIndex
+                                attach = { lang, tr, ln ->
+                                    val cur = scene[idx] as Node.Show
+                                    if (lang in cur.translations) duplicate(lang, ln)
+                                    scene[idx] = cur.copy(translations = cur.translations + (lang to tr))
+                                }
+                            }
                             "@give" -> scene.add(Node.Give(id(arg, n, "предмета")))
                             "@take" -> scene.add(Node.Take(id(arg, n, "предмета")))
                             "@param" -> {
@@ -368,8 +415,9 @@ object ScriptParser {
         for ((name, nodes) in scenes) {
             if (nodes.isEmpty()) throw StoryParseException("сцена «$name» пуста")
             val last = nodes.last()
-            if (last !is Node.End && last !is Node.Goto && last !is Node.Choice && last !is Node.Explore) {
-                throw StoryParseException("сцена «$name» не завершена: последней командой должна быть @end, @goto, @choice или @explore")
+            val endsWithMinigameJump = last is Node.Minigame && last.okTarget != null
+            if (last !is Node.End && last !is Node.Goto && last !is Node.Choice && last !is Node.Explore && !endsWithMinigameJump) {
+                throw StoryParseException("сцена «$name» не завершена: последней командой должна быть @end, @goto, @choice, @explore или @minigame с «-> сцена»")
             }
             for (node in nodes) {
                 val targets = when (node) {
@@ -378,6 +426,7 @@ object ScriptParser {
                     is Node.IfWhen -> listOf(node.target)
                     is Node.Choice -> node.options.map { it.target }
                     is Node.Explore -> node.hotspots.map { it.target } + node.uses.map { it.target } + node.fails.map { it.target }
+                    is Node.Minigame -> listOfNotNull(node.okTarget, node.failTarget)
                     else -> emptyList()
                 }
                 for (t in targets) {

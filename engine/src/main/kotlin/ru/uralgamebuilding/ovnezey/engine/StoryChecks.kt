@@ -16,6 +16,8 @@ object StoryChecks {
                     is Node.Explore -> node.hotspots.forEach {
                         if (language !in it.translations) missing += "$scene#$index: область «${it.label.take(40)}»"
                     }
+                    is Node.Minigame -> if (language !in node.translations) missing += "$scene#$index: мини-игра «${node.label.take(40)}»"
+                    is Node.Show -> if (language !in node.translations) missing += "$scene#$index: вставка «${node.text.take(40)}»"
                     else -> {}
                 }
             }
@@ -70,6 +72,7 @@ object StoryChecks {
                     is Node.IfGoto -> stack.add(node.target)
                     is Node.IfWhen -> stack.add(node.target)
                     is Node.Choice -> node.options.forEach { stack.add(it.target) }
+                    is Node.Minigame -> { node.okTarget?.let { stack.add(it) }; node.failTarget?.let { stack.add(it) } }
                     is Node.Explore -> {
                         node.hotspots.forEach { stack.add(it.target) }
                         node.uses.forEach { stack.add(it.target) }
@@ -119,6 +122,7 @@ object StoryChecks {
         val stack = ArrayDeque<GameState>()
         val scenes = LinkedHashSet<String>()
         val errors = ArrayList<String>()
+        scenes += Story.START // стартовая сцена только пересылает дальше, поэтому позиции в ней не бывает
         var ends = 0
         fun push(s: GameState) { if (seen.size < stateLimit && seen.add(s)) stack.add(s) }
         try {
@@ -132,7 +136,8 @@ object StoryChecks {
             val actions: List<(StoryRunner) -> Unit>
             try {
                 actions = when (val step = StoryRunner(story, s, language).step) {
-                    is Step.Say -> listOf { r -> r.advance() }
+                    is Step.Say, is Step.Show -> listOf { r -> r.advance() }
+                    is Step.Minigame -> listOf({ r: StoryRunner -> r.finishMinigame(true) }, { r: StoryRunner -> r.finishMinigame(false) })
                     is Step.Choose -> step.options.indices.map { i -> { r: StoryRunner -> r.choose(i) } }
                     is Step.Explore -> step.hotspots.map { h -> { r: StoryRunner -> r.tap(h.id) } }
                     Step.End -> { ends++; emptyList() }
@@ -162,5 +167,33 @@ object StoryChecks {
         nodes.filterIsInstance<Node.Explore>().flatMap { e ->
             e.hotspots.filter { it.y + it.h > HOTSPOT_MAX_BOTTOM + 1e-4f }.map { "$name/${it.id}" }
         }
+    }
+
+    /**
+     * Автоматическое прохождение для проверок. На выборе берётся первый вариант, цель которого есть в [prefer],
+     * иначе первый доступный. Мини-игры решает [minigameSuccess]. Осмотр завершается областью [exploreExit].
+     * Возвращает исполнитель на конце сюжета; если конец не достигнут за [maxSteps] шагов, бросает исключение.
+     */
+    fun autoplay(
+        story: Story,
+        prefer: Set<String> = emptySet(),
+        language: Language = Language.DEFAULT,
+        exploreExit: String = "done",
+        maxSteps: Int = 10_000,
+        minigameSuccess: (Step.Minigame) -> Boolean = { true },
+        stopAt: (StoryRunner) -> Boolean = { false },
+    ): StoryRunner {
+        val r = StoryRunner(story, language = language)
+        repeat(maxSteps) {
+            if (stopAt(r)) return r
+            when (val step = r.step) {
+                is Step.Say, is Step.Show -> r.advance()
+                is Step.Choose -> r.choose(step.options.indexOfFirst { it.target in prefer }.takeIf { it >= 0 } ?: 0)
+                is Step.Explore -> r.tap(step.hotspots.firstOrNull { it.id == exploreExit }?.id ?: step.hotspots.first().id)
+                is Step.Minigame -> r.finishMinigame(minigameSuccess(step))
+                Step.End -> return r
+            }
+        }
+        error("конец сюжета не достигнут за $maxSteps шагов, позиция ${r.state.scene}#${r.state.index}")
     }
 }

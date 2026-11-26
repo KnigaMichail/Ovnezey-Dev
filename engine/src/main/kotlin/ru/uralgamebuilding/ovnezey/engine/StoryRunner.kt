@@ -30,6 +30,12 @@ sealed interface Step {
     /** Осмотр локации: доступные сейчас области. */
     data class Explore(val hotspots: List<HotspotView>) : Step
 
+    /** Мини-игра. Итог передаётся в [StoryRunner.finishMinigame]. */
+    data class Minigame(val kind: MinigameKind, val count: Int, val seconds: Int, val label: String) : Step
+
+    /** Экранная вставка, продолжается через [StoryRunner.advance]. */
+    data class Show(val kind: ShowKind, val text: String) : Step
+
     data object End : Step
 }
 
@@ -62,6 +68,8 @@ class StoryRunner(
             is Node.Explore -> Step.Explore(visibleHotspots(node).map {
                 HotspotView(it.id, it.translations.resolve(it.label, language), it.x, it.y, it.w, it.h)
             })
+            is Node.Minigame -> Step.Minigame(node.kind, node.count, node.seconds, node.translations.resolve(node.label, language))
+            is Node.Show -> Step.Show(node.kind, node.translations.resolve(node.text, language))
             Node.End -> Step.End
             else -> error("внутренняя ошибка: незавершённая команда $node")
         }
@@ -79,10 +87,26 @@ class StoryRunner(
     val locationTitle: String?
         get() = story.locationTitle(state.location, language)
 
-    /** Перейти к следующему узлу после реплики. */
+    /** Перейти к следующему узлу после реплики или экранной вставки. */
     fun advance() {
-        check(nodeAt(state) is Node.Say) { "advance() допустим только на реплике" }
+        check(nodeAt(state).let { it is Node.Say || it is Node.Show }) { "advance() допустим только на реплике или вставке" }
         state = state.copy(index = state.index + 1)
+        settle()
+    }
+
+    /**
+     * Итог мини-игры. Успех ведёт в цель успеха или дальше по сцене. Провал ведёт в цель провала;
+     * без неё состояние не меняется, и интерфейс запускает мини-игру заново.
+     */
+    fun finishMinigame(success: Boolean) {
+        val node = nodeAt(state)
+        check(node is Node.Minigame) { "finishMinigame() допустим только на мини-игре" }
+        if (success) {
+            state = if (node.okTarget != null) state.copy(scene = node.okTarget, index = 0) else state.copy(index = state.index + 1)
+        } else {
+            val target = node.failTarget ?: return
+            state = state.copy(scene = target, index = 0)
+        }
         settle()
     }
 
@@ -156,7 +180,7 @@ class StoryRunner(
         while (true) {
             if (++guard > MAX_AUTO_STEPS) error("зацикливание в сцене «${state.scene}»: слишком много автоматических переходов")
             when (val node = nodeAt(state)) {
-                is Node.Say, Node.End -> return
+                is Node.Say, is Node.Show, is Node.Minigame, Node.End -> return
                 is Node.Choice -> {
                     check(visibleOptions(node).isNotEmpty()) { "в сцене «${state.scene}» нет доступных вариантов выбора" }
                     return
@@ -180,6 +204,12 @@ class StoryRunner(
                 is Node.Give -> state = next(inventory = state.inventory + node.item)
                 is Node.Take -> state = next(inventory = state.inventory - node.item)
                 is Node.SetLocation -> state = next(location = node.location)
+                is Node.Reset -> state = next(
+                    flags = state.flags.intersect(node.keep),
+                    params = emptyMap(),
+                    inventory = emptySet(),
+                    location = null,
+                )
             }
         }
     }

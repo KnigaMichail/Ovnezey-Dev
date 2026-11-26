@@ -43,6 +43,16 @@ class SettingsActivity : BaseActivity() {
             PixelUi.matchWidth(this),
         )
         column.addView(PixelUi.spacing(this))
+        column.addView(PixelUi.label(this, getString(R.string.settings_easy_minigames), color = PixelUi.MUTED), PixelUi.matchWidth(this))
+        val easyOn = services.settings.easyMinigames
+        column.addView(
+            PixelUi.button(this, getString(if (easyOn) R.string.on else R.string.off)) {
+                services.settings.easyMinigames = !easyOn
+                recreate()
+            }.also { it.gravity = Gravity.START or Gravity.CENTER_VERTICAL },
+            PixelUi.matchWidth(this),
+        )
+        column.addView(PixelUi.spacing(this))
         column.addView(PixelUi.button(this, getString(R.string.back)) { finish() }, PixelUi.matchWidth(this))
 
         val width = (resources.displayMetrics.widthPixels * 0.55f).toInt()
