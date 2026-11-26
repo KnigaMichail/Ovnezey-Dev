@@ -309,8 +309,8 @@ ellis: Текущее время: 07:42. Ваше определение утр�
 |en Current time: 07:42. Your definition of morning matches the schedule.
 charlie: Рад, что хотя бы у кого-то здесь всё по расписанию.
 |en Glad that at least someone here is on schedule.
-> ЭЛЛИС подъехал ближе и остановился возле дивана. Его оптический модуль несколько раз изменил фокус.
-|en ELLIS rolled closer and stopped beside the sofa. His optical module refocused several times.
+> ЭЛЛИС подъехала ближе и остановилась возле дивана. Её оптический модуль несколько раз изменил фокус.
+|en ELLIS rolled closer and stopped beside the sofa. Her optical module refocused several times.
 ellis: Состояние владельца: нестабильное. Рекомендую избегать резких движений.
 |en Owner's condition: unstable. I recommend avoiding sudden movements.
 charlie: Передай это моему начальнику.
@@ -321,13 +321,13 @@ charlie: Как всегда, очень полезен.
 |en Very helpful, as always.
 > Сэм тихо усмехнулся.
 |en Sam chuckled quietly.
-sam: Вообще-то, если бы не он, ты бы сейчас со мной не разговаривал.
-|en Actually, if it were not for him, you would not be talking to me right now.
+sam: Вообще-то, если бы не она, ты бы сейчас со мной не разговаривал.
+|en Actually, if it were not for her, you would not be talking to me right now.
 > Я посмотрел на робота.
 |en I looked at the robot.
 charlie: И давно ты работаешь на медицинском факультете?
 |en Since when do you work at a medical school?
-ellis: Я выполнил первичную диагностику, обработал повреждения и вызвал медицинскую помощь. Ваш друг прибыл раньше специалистов.
+ellis: Я выполнила первичную диагностику, обработала повреждения и вызвала медицинскую помощь. Ваш друг прибыл раньше специалистов.
 |en I performed primary diagnostics, treated the injuries and called for medical help. Your friend arrived before the specialists.
 sam: Повезло тебе. Я хотя бы не требую оплаты за каждое движение.
 |en Lucky you. At least I do not charge for every movement.
@@ -339,8 +339,8 @@ sam: С учётом твоего долга я бы сначала провер
 |en I ignored that last remark.
 charlie: ЭЛЛИС, что со мной произошло?
 |en ELLIS, what happened to me?
-> Робот выдержал небольшую паузу.
-|en The robot held a short pause.
+> ЭЛЛИС выдержала небольшую паузу.
+|en ELLIS held a short pause.
 ellis: Последний анализ крови выявил токсичное вещество неизвестного происхождения. На момент проведения повторного анализа критических отклонений не обнаружено. Рекомендовано дополнительное медицинское обследование.
 |en The latest blood test revealed a toxic substance of unknown origin. At the time of the repeat test, no critical deviations were found. Further medical examination is recommended.
 charlie: Токсичное вещество? Откуда?
@@ -393,7 +393,7 @@ charlie: У каждого свои приоритеты.
 |en The apartment looked as usual. The same walls, the same furniture, the same dim light. Everything was in its place.
 > И всё же было странное ощущение, будто я давно здесь не был.
 |en And yet there was a strange feeling that I had not been here for a long time.
-> ЭЛЛИС остановился рядом.
+> ЭЛЛИС остановилась рядом.
 |en ELLIS stopped beside me.
 ellis: Рекомендую не совершать резких движений.
 |en I recommend avoiding sudden movements.
@@ -413,18 +413,19 @@ charlie: Попытка засчитана.
 
 # CH1_SCENE_04 — Осмотр квартиры.
 # Координаты областей условные, пока нет картинки assets/locations/apartment.png.
+# Нижние ~17% экрана закрывает панель текста: области должны лежать выше, y+h не больше 0.80.
 # Повторный осмотр объекта ведёт в ch1_04_again и не выдаёт новых сведений.
 @scene ch1_scene_04
 @explore
-* table 0.08 0.55 0.25 0.30 Стол -> ch1_04_table
+* table 0.08 0.45 0.25 0.28 Стол -> ch1_04_table
 |en Table
-* ellis 0.40 0.58 0.14 0.26 ЭЛЛИС -> ch1_04_ellis
+* ellis 0.40 0.50 0.14 0.23 ЭЛЛИС -> ch1_04_ellis
 |en ELLIS
-* sam 0.58 0.28 0.16 0.50 Сэм -> ch1_04_sam
+* sam 0.58 0.25 0.16 0.48 Сэм -> ch1_04_sam
 |en Sam
-* door 0.84 0.22 0.12 0.52 Входная дверь -> ch1_04_door
+* door 0.84 0.22 0.12 0.50 Входная дверь -> ch1_04_door
 |en Front door
-* done 0.30 0.90 0.40 0.09 Закончить осмотр -> ch1_scene_05
+* done 0.30 0.73 0.40 0.07 Закончить осмотр -> ch1_scene_05
 |en Stop looking around
 
 @scene ch1_04_again
@@ -453,13 +454,13 @@ sam: У тебя всё так называется.
 
 @scene ch1_04_ellis
 @if CH1_KNOWS_FAMILY_ARCHIVE -> ch1_04_again
-> Робот повернул оптический модуль в мою сторону.
-|en The robot turned its optical module toward me.
+> ЭЛЛИС повернула оптический модуль в мою сторону.
+|en ELLIS turned her optical module toward me.
 ellis@right: Запрос?
 |en Query?
-charlie@left: Ты сказал, что вызвал помощь. Что ещё делал, пока я был без сознания?
+charlie@left: Ты сказала, что вызвала помощь. Что ещё делал, пока я был без сознания?
 |en You said you called for help. What else did you do while I was unconscious?
-ellis: Поддерживал работу систем жизнеобеспечения, проводил диагностику и осуществлял мониторинг состояния владельца.
+ellis: Поддерживала работу систем жизнеобеспечения, проводила диагностику и осуществляла мониторинг состояния владельца.
 |en I maintained life support, ran diagnostics and monitored the owner's condition.
 charlie: А до этого?
 |en And before that?
@@ -528,7 +529,7 @@ sam@right: Что-то не так?
 |en Something wrong?
 charlie@left: Нет. Просто проверяю.
 |en No. Just checking.
-sam: Если кто-то и приходил, ЭЛЛИС бы сообщил.
+sam: Если кто-то и приходил, ЭЛЛИС бы сообщила.
 |en If anyone had come, ELLIS would have reported it.
 charlie: Надеюсь.
 |en I hope so.
@@ -542,7 +543,7 @@ charlie: Надеюсь.
 |en Sam was already heading for the exit when I stopped him.
 charlie@left: Подожди. Ты сказал, что добрался до меня. Как именно?
 |en Wait. You said you got to me. How, exactly?
-sam@right: Вызвал меня ЭЛЛИС. Я приехал, когда ты уже был не в состоянии нормально отвечать.
+sam@right: Вызвала меня ЭЛЛИС. Я приехал, когда ты уже был не в состоянии нормально отвечать.
 |en ELLIS called me. I came when you were already in no state to answer properly.
 charlie: А что случилось до этого?
 |en And what happened before that?
@@ -995,8 +996,8 @@ charlie@left: Отлично. Ещё одна дверь, которая мен�
 # Если игрок не осматривал ЭЛЛИС в сцене 04, архив отца в этой сцене упоминается впервые (ветка ch1_scene_15 без CH1_KNOWS_FAMILY_ARCHIVE).
 @scene ch1_scene_15
 @location apartment
-> Я вернулся в квартиру. ЭЛЛИС находился в комнате и, судя по его положению, продолжал выполнять обычный цикл наблюдения.
-|en I returned to the apartment. ELLIS was in the room and, judging by his position, was continuing his usual observation cycle.
+> Я вернулся в квартиру. ЭЛЛИС находилась в комнате и, судя по её положению, продолжал выполнять обычный цикл наблюдения.
+|en I returned to the apartment. ELLIS was in the room and, judging by her position, was continuing his usual observation cycle.
 ellis@right: Хо-зя-ин. Вы вернулись.
 |en Mas-ter. You have returned.
 charlie@left: Как видишь.
@@ -1022,7 +1023,7 @@ ellis: Подтверждаю.
 @goto ch1_15_archive_ask
 
 @scene ch1_15_archive_known
-charlie@left: Ты говорил, что у тебя есть архив отца.
+charlie@left: Ты говорила, что у тебя есть архив отца.
 |en You said you have my father's archive.
 ellis@right: Подтверждаю.
 |en Confirmed.
@@ -1035,8 +1036,8 @@ ellis@right: В архиве имеются документы, связанны
 |en The archive holds documents connected to the activity of Reinod Efkindz. A separate query is required for viewing.
 charlie: Покажи, что можешь.
 |en Show what you can.
-> Робот некоторое время обрабатывал запрос.
-|en The robot processed the request for a while.
+> ЭЛЛИС некоторое время обрабатывала запрос.
+|en ELLIS processed the request for a while.
 ellis: Обнаружены архивные записи. Часть файлов повреждена или недоступна.
 |en Archive records found. Some files are damaged or unavailable.
 charlie: Можешь восстановить?
@@ -1047,8 +1048,8 @@ ellis: Для восстановления необходим дополните
 |en I sighed.
 charlie: Конечно.
 |en Of course.
-> ЭЛЛИС повернул оптический модуль в сторону коридора.
-|en ELLIS turned his optical module toward the corridor.
+> ЭЛЛИС повернула оптический модуль в сторону коридора.
+|en ELLIS turned her optical module toward the corridor.
 ellis: Также обнаружено несоответствие в данных домашней системы.
 |en A discrepancy was also detected in the home system's data.
 charlie: Какое ещё несоответствие?
@@ -1063,7 +1064,7 @@ ellis: В период вашего отсутствия.
 |en During your absence.
 > Я медленно поднялся.
 |en I rose slowly.
-charlie: И почему ты не сообщил раньше?
+charlie: И почему ты не сообщила раньше?
 |en And why did you not report it earlier?
 ellis: Вы не запрашивали соответствующую информацию.
 |en You did not request the relevant information.
@@ -1135,7 +1136,7 @@ ellis@right: Подтверждаю. Замок переведён в режим
 @scene ch1_scene_16
 > За дверью снова послышался скрежет. На этот раз громче.
 |en The scraping came again from behind the door. Louder this time.
-> ЭЛЛИС подъехал ко мне.
+> ЭЛЛИС подъехала ко мне.
 |en ELLIS rolled up to me.
 ellis@right: Хо-зя-ин. Рекомендую не открывать дверь.
 |en Mas-ter. I recommend not opening the door.
@@ -1165,8 +1166,8 @@ ellis: Подтверждаю.
 |en I looked at ELLIS.
 charlie: Что это было?
 |en What was that?
-> Робот не ответил сразу.
-|en The robot did not answer at once.
+> ЭЛЛИС не ответила сразу.
+|en ELLIS did not answer at once.
 ellis: Данные отсутствуют.
 |en No data.
 > Я перевёл взгляд на входную дверь. На этот раз мне совсем не хотелось проверять, кто находится по ту сторону.

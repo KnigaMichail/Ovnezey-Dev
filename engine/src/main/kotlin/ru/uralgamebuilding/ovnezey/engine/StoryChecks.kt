@@ -153,4 +153,14 @@ object StoryChecks {
         }
         return WalkReport(seen.size, scenes, ends, errors)
     }
+
+    /** Нижняя граница области осмотра (доля высоты экрана): ниже неё лежит панель текста и нажатие не пройдёт. */
+    const val HOTSPOT_MAX_BOTTOM = 0.80f
+
+    /** Области осмотра, заходящие под панель текста: `сцена/область`. */
+    fun hotspotsUnderTextPanel(story: Story): List<String> = story.scenes.flatMap { (name, nodes) ->
+        nodes.filterIsInstance<Node.Explore>().flatMap { e ->
+            e.hotspots.filter { it.y + it.h > HOTSPOT_MAX_BOTTOM + 1e-4f }.map { "$name/${it.id}" }
+        }
+    }
 }

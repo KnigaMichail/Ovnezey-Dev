@@ -24,6 +24,9 @@ class StoryContentTest {
     fun everySceneIsReachable() = assertEquals(emptySet(), StoryChecks.unreachableScenes(story))
 
     @Test
+    fun hotspotsStayAboveTextPanel() = assertEquals(emptyList(), StoryChecks.hotspotsUnderTextPanel(story))
+
+    @Test
     fun noFlagIsReadWithoutBeingSet() = assertEquals(emptySet(), StoryChecks.flagsNeverSet(story))
 
     @Test
